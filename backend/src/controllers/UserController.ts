@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { UserViewModel } from '../viewmodels/UserViewModel';
-import User from '../models/User';
+import { UserService } from '../services/userService';
 
-const userVM = new UserViewModel();
+const userVM = new UserService();
 
 export class UserController {
   async cadastrar(req: Request, res: Response) {
@@ -10,31 +9,29 @@ export class UserController {
       const resultado = await userVM.criarUsuario(req.body);
       res.status(201).json(resultado);
     } catch (error: any) {
+      //mensagem de falha para o cadastro
       res.status(400).json({ erro: error.message });
     }
   }
-}
 
-// Login de usuário
-export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
-  try {
-    // Verificação se o usuário existe
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Usuário não encontrado' });
+  async loginUser(req: Request, res: Response) {
+    try {
+      const resultado = await userVM.loginUser(req.body);
+      res.status(201).json(resultado);
+    } catch (error: any) {
+      //mensagem de falha para o login
+      res.status(400).json({ erro: error.message });
     }
-
-    // Validação de senha
-    if (user.senha !== password) {
-      return res.status(401).json({ message: 'Senha incorreta' });
-    }
-
-    // Sucesso
-    res.status(200).json({ message: 'Login realizado com sucesso', user });
-  } catch (error) {
-    console.error('Erro ao realizar login:', error);
-    res.status(500).json({ message: 'Erro interno no servidor' });
   }
-};
+
+  async obterUsuarioPorEmail(req: Request, res: Response) {
+    try {
+      const resultado = await userVM.obterUsuarioPorEmail(req.params.email);
+      res.status(200).json(resultado);
+    } catch (error: any) {
+      //mensagem de falha para enviar os dados do usuário
+      res.status(400).json({ erro: error.message });
+    }
+  }
+
+}
