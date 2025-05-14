@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Cadastro from './src/pages';
+import AlterarCadastro from './src/pages/alterarCadastro';
+import TelaInicial from './src/pages/telaInicial';
 
 import { useFonts, RobotoSerif_400Regular,
   RobotoSerif_700Bold,
  } from '@expo-google-fonts/roboto-serif';
-import AppLoading from 'expo-app-loading';
+
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -13,14 +15,10 @@ export default function App() {
     RobotoSerif_700Bold
   });
 
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
-
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <Cadastro></Cadastro>
+      <TelaInicial></TelaInicial>
     </View>
   );
 }

@@ -33,4 +33,14 @@ export const style = StyleSheet.create({
     alignItems: 'flex-start'
   },
 
+  mainScreenTitleInput: {
+    fontFamily: 'Roboto-serif',
+    borderStyle: 'solid',
+    borderColor: '#000000',
+    fontSize: 50,
+    color: '#a2a2a2',
+    justifyContent: 'center',
+    alignContent: 'center'
+  }
+
 }) 

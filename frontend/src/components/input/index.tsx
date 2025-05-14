@@ -7,13 +7,18 @@ type Props = TextInputProps & {
   placeholder?: string,
   value?: string;
   onChangeText?: (text: string) => void;
+  variant?: 'default' | 'mainScreen';
 }
 
-export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, ...rest }, ref) => {
+export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, variant= 'default', ...rest }, ref) => {
+  let textStyle;
+
+  variant === 'mainScreen' ? style.mainScreenTitleInput : style.titleInput;
+
   return (
     <>
     <View style={style.fragment}>
-      <Text style={style.titleInput}>{title}</Text>
+      <Text style={textStyle}>{title}</Text>
     </View>
       <View style={style.boxInput}>
         <TextInput
