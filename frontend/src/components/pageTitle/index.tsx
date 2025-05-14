@@ -9,8 +9,7 @@ type Props = TextProps & {
 export const PageTitle = forwardRef<RNText, Props>(({ text, ...rest }, ref) => {
   return(
     <View style={style.view}>
-    <Text style={style.title}>{text}</
-    Text>
+      <Text style={style.title}>{text}</Text>
     </View>
   )
 });
