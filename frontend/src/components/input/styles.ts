@@ -35,6 +35,16 @@ export const style = StyleSheet.create({
 
   icon:{
     marginLeft: -20
+  },
+  
+  mainScreenTitleInput: {
+    fontFamily: 'Roboto-serif',
+    borderStyle: 'solid',
+    borderColor: '#000000',
+    fontSize: 50,
+    color: '#a2a2a2',
+    justifyContent: 'center',
+    alignContent: 'center'
   }
 
 }) 

@@ -27,7 +27,11 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+<<<<<<< HEAD
       "expo-router"
+=======
+      "expo-font"
+>>>>>>> 7a28419 (Frontend alterarCadastro, frontend telaInicial)
     ]
   }
 }

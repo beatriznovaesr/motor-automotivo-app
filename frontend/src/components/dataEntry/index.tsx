@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
   container: {
     padding: 0,
     width: '100%',
-    justifyContent: 'center',
-    
+    justifyContent: 'center'
   },
+
   label: {
     marginBottom: 10,
     fontFamily: 'RobotoSerif_400Regular',
