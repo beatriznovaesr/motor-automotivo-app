@@ -1,14 +1,19 @@
 import React, {useState} from "react";
-import { View, Alert } from "react-native"
 import { Input } from "../components/input"; 
 import { PageTitle } from "../components/pageTitle"; 
 import { Button } from "../components/button";
+import Imagem from "../components/image";
+import logo from "../assets/logo.png";
 
+import TextoLink from "../components/textoLink";
+import { View, Text, Alert } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Login(){
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     try {
@@ -45,16 +50,16 @@ export default function Login(){
         width: '100%'
       }}
     >
-        // imagem de logo
-        
+      <Imagem source={logo} width={120} height={120} borderRadius={60} />        
+      {/*<Imagem source={{ uri: 'https://exemplo.com/logo.png' }} width={120} height={120} />  IMAGEM COM URL REMOTA/EXTERNA */}
       <PageTitle text='The Blueprints'></PageTitle>
       <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
       <Input title="Senha" value={senha} onChangeText={setSenha}></Input>
       <Button text='Entrar' onPress={handleLogin}></Button>
 
-      // não possui cadastro 
-      // Cadastre-se aqui
-      
+      <Text style={{ color: 'white', marginTop: 20 }}>Não possui cadastro?</Text>
+      <TextoLink texto="Cadastre-se aqui" onPress={() => navigation.navigate('Cadastro' as never)}></TextoLink>
+
     </View>
   
   )
