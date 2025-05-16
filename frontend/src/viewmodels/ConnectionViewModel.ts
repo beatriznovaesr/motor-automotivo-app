@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ConnectionState, ConnectionStatus } from '../models/ConnectionStatus';
+import { ConnectionState, ConnectionStatus } from '../models/connectionStatus';
 
 const PING_URL = 'http://localhost:3001/ping'; // Ajuste para produção
 

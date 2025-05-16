@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useConnectionViewModel } from '../../viewmodels/ConnectionViewModel';
-import { ConnectionState } from '../../models/ConnectionStatus';
+import { ConnectionState } from '../../models/connectionStatus';
 
 const ConnectionStatusComponent: React.FC = () => {
   const { status } = useConnectionViewModel();
