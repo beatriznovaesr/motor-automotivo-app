@@ -1,0 +1,13 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true
+  },
+  "include": [
+    "src",
+    "src/images.d.ts",
+    "app",
+    "app/cadastro.tsx",
+    "app/index.tsx"
+  ]
+}
