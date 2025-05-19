@@ -16,13 +16,18 @@ type Props = TextInputProps & {
 export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, secureTextEntry, showVisibilityToggle, variant= 'default', ...rest }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const shouldHideText = showVisibilityToggle ? !isVisible : secureTextEntry;
-  let textStyle;
 
-  variant === 'mainScreen' ? style.mainScreenTitleInput : style.titleInput;
+  const textStyle = variant === 'mainScreen' 
+  ? style.mainScreenTitleInput 
+  : style.titleInput;
+
+  const viewStyle = variant === 'mainScreen' 
+  ? style.mainScreenFragment 
+  : style.fragment;
 
   return (
     <>
-    <View style={style.fragment}>
+    <View style={viewStyle}>
       <Text style={textStyle}>{title}</Text>
     </View>
       <View style={style.boxInput}>

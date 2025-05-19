@@ -39,12 +39,15 @@ export const style = StyleSheet.create({
   
   mainScreenTitleInput: {
     fontFamily: 'Roboto-serif',
-    borderStyle: 'solid',
-    borderColor: '#000000',
-    fontSize: 50,
-    color: '#a2a2a2',
-    justifyContent: 'center',
-    alignContent: 'center'
+    textShadowColor: '#000000',
+    textShadowOffset: {width: 2, height: 2},
+    fontSize: 40,
+    color: '#FFFFFF'
+  },
+
+  mainScreenFragment: {
+    width: '80%',
+    alignItems: 'center'
   }
 
 }) 
