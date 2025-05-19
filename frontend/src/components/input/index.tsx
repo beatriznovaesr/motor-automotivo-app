@@ -11,13 +11,17 @@ type Props = TextInputProps & {
 }
 
 export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, variant= 'default', ...rest }, ref) => {
-  let textStyle;
+  const textStyle = variant === 'mainScreen' 
+  ? style.mainScreenTitleInput 
+  : style.titleInput;
 
-  variant === 'mainScreen' ? style.mainScreenTitleInput : style.titleInput;
+  const viewStyle = variant === 'mainScreen' 
+  ? style.mainScreenFragment 
+  : style.fragment;
 
   return (
     <>
-    <View style={style.fragment}>
+    <View style={viewStyle}>
       <Text style={textStyle}>{title}</Text>
     </View>
       <View style={style.boxInput}>
