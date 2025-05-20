@@ -1,8 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Cadastro from './src/pages';
-import AlterarCadastro from './src/pages/alterarCadastro';
-import TelaInicial from './src/pages/telaInicial';
+import  Cadastro  from './app/cadastro.tsx';
 
 import { useFonts, RobotoSerif_400Regular,
   RobotoSerif_700Bold,
@@ -18,7 +16,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <TelaInicial></TelaInicial>
+      <Cadastro></Cadastro>
     </View>
   );
 }

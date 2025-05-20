@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 import dotenv from 'dotenv';
 dotenv.config();
 
->>>>>>> alterar-cadastro
 import app from './app';
 import { connectDB } from './config/db';
 

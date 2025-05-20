@@ -1,16 +1,22 @@
-import React, {forwardRef, Fragment} from "react";
-import { View, Text, TextInput, type TextInputProps, TextInput as RNTextInput} from "react-native";
+import React, {forwardRef, useState} from "react";
+import { View, Text, TextInput, type TextInputProps, TextInput as RNTextInput, TouchableOpacity } from "react-native";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { style } from "./styles";
 
 type Props = TextInputProps & {
   title?: string,
   placeholder?: string,
   value?: string;
+  showVisibilityToggle?: boolean,
+  secureTextEntry?:Boolean,
   onChangeText?: (text: string) => void;
   variant?: 'default' | 'mainScreen';
 }
 
-export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, variant= 'default', ...rest }, ref) => {
+export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, secureTextEntry, showVisibilityToggle, variant= 'default', ...rest }, ref) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const shouldHideText = showVisibilityToggle ? !isVisible : secureTextEntry;
+
   const textStyle = variant === 'mainScreen' 
   ? style.mainScreenTitleInput 
   : style.titleInput;
@@ -32,6 +38,16 @@ export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, varia
           placeholderTextColor='#A6A6A6'
           {...rest}
         />
+        {showVisibilityToggle && (
+          <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+            <MaterialCommunityIcons
+              name={isVisible ? 'eye-outline' : 'eye-off-outline'}
+              size={24}
+              color="#000000"
+              style={style.icon}
+            />
+          </TouchableOpacity>
+        )}
     </View>
     </>
   )
