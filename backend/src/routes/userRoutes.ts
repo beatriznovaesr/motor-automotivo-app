@@ -7,4 +7,8 @@ const controller = new UserController();
 router.post('/cadastro', controller.cadastrar);
 router.post('/login', controller.loginUser);
 router.get('/usuarios/:email', controller.obterUsuarioPorEmail);
+<<<<<<< HEAD
+=======
+
+>>>>>>> alterar-cadastro
 export default router;

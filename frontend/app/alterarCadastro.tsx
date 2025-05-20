@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { PageTitle } from "../components/pageTitle";
-import { Input } from '../components/input';
-import  InputDeData  from "../components/dataEntry";
-import { Button } from '../components/button';
-import { NotificationSwitch } from "../components/notificationSwitch";
+import { PageTitle } from "../src/components/pageTitle";
+import { Input } from '../src/components/input';
+import  InputDeData  from "../src/components/dataEntry";
+import { Button } from '../src/components/button';
+import { NotificationSwitch } from "../src/components/notificationSwitch";
 
 export default function AlterarCadastro() {
     const [nome, setNome] = useState("");

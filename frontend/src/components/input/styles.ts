@@ -33,6 +33,10 @@ export const style = StyleSheet.create({
     alignItems: 'flex-start'
   },
 
+  icon:{
+    marginLeft: -20
+  },
+  
   mainScreenTitleInput: {
     fontFamily: 'Roboto-serif',
     textShadowColor: '#000000',
