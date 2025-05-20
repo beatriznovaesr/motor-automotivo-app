@@ -100,4 +100,15 @@ export class UserService {
       throw new Error('Erro interno no servidor');
     }
   }
+
+  async alterarUsuario(id: string, dados: any) {
+    try {
+      return await User.findByIdAndUpdate(id, dados, { new: true });
+
+    } catch (error) {
+      console.error('Erro ao alterar dados do usuário', error);
+      throw new Error('Erro interno');
+    }
+  }
+
 }

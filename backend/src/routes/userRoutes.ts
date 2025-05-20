@@ -7,4 +7,6 @@ const controller = new UserController();
 router.post('/cadastro', controller.cadastrar);
 router.post('/login', controller.loginUser);
 router.get('/usuarios/:email', controller.obterUsuarioPorEmail);
+router.put('/usuario/:id', controller.alterarUsuario);
+
 export default router;

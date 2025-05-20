@@ -34,4 +34,21 @@ export class UserController {
     }
   }
 
+  async alterarUsuario(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const dadosAlterados = req.body;
+
+      const usuarioAlterado = await userVM.alterarUsuario(id, dadosAlterados);
+
+      if (!usuarioAlterado) {
+        res.status(404).json({ erro: 'Usuário não encontrado' });
+      }
+      res.status(200).json(usuarioAlterado);
+
+    } catch (error: any) {
+      res.status(400).json({erro: error.message});
+    }
+  }
+
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { PageTitle } from "../src/components/pageTitle";
 import { Input } from '../src/components/input';
@@ -11,7 +11,42 @@ export default function AlterarCadastro() {
     const [email, setEmail] = useState("");
     const [dataNascimento, setDataNascimento] = useState(new Date());
 
-    const handleAlterarCadastro = async () => {}
+    useEffect(() => {
+        async function carregarUsuario() {
+            try {//VERIFICAR URL DO FETCH
+                const resposta = await fetch('');
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao buscar dados do usuário");
+                }
+                const dados = await resposta.json();
+
+                setNome(dados.nome);
+                setEmail(dados.email);
+                setDataNascimento(new Date(dados.dataNascimento));
+
+            } catch (error) {
+                console.error('Erro ao carregar dados do usuário:', error)
+            }
+        }
+        carregarUsuario();
+    }, []);
+
+    const handleAlterarCadastro = async () => {
+        //VERIFICAR URL DO FETCH
+        await fetch('', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nome: nome,
+                email: email,
+                dataNascimento: dataNascimento,
+            }),
+        });
+    };
+
     const handleAlterarSenha = async () => {}
     const handleLogoff = async () => {}
     
@@ -26,8 +61,8 @@ export default function AlterarCadastro() {
             gap: 6
         }}>
             <PageTitle text='Meu perfil'></PageTitle>
-            <Input title='Nome de usuário'></Input>
-            <Input title='E-mail'></Input>
+            <Input title='Nome de usuário' value={nome} onChangeText={setNome}></Input>
+            <Input title='E-mail' value={email} onChangeText={setEmail}></Input>
             <InputDeData value={dataNascimento} onChange={setDataNascimento}></InputDeData>
             <View style= {{alignSelf: 'flex-start', marginLeft: '12%', marginVertical: 16}}>
                 <NotificationSwitch></NotificationSwitch>
