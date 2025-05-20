@@ -7,4 +7,5 @@ const controller = new UserController();
 router.post('/cadastro', controller.cadastrar);
 router.post('/login', controller.loginUser);
 router.get('/usuarios/:email', controller.obterUsuarioPorEmail);
+
 export default router;

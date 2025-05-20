@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Input } from '../components/input';
-import { Button } from '../components/button';
-import { PageTitle } from "../components/pageTitle";
+import { Input } from '../src/components/input';
+import { Button } from '../src/components/button';
+import { PageTitle } from "../src/components/pageTitle";
 
 export default function TelaAlterarSenha() {
 
