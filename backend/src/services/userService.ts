@@ -101,6 +101,7 @@ export class UserService {
     }
   }
 
+  //Tela alterarCadastro - Encontra um usuário pelo id e realiza alterações
   async alterarUsuario(id: string, dados: any) {
     try {
       return await User.findByIdAndUpdate(id, dados, { new: true });

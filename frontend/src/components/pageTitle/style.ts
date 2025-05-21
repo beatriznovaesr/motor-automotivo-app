@@ -14,8 +14,9 @@ export const style = StyleSheet.create({
   },
 
   view: {
-    height:40,
-    marginTop: -70,
-    marginBottom: 20
+    //height:40,
+    //marginTop: -70,
+    //marginBottom: 20
+    marginTop: 15
   }
 });
