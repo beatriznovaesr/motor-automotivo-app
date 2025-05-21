@@ -1,11 +1,11 @@
 import React, {useState} from "react";
-import { View, Alert } from "react-native"
+import { View, Alert, TouchableOpacity } from "react-native"
 import { Input } from "../src/components/input";
 import  InputDeData  from "../src/components/dataEntry";
 import { PageTitle } from "../src/components/pageTitle";
 import { Button } from "../src/components/button";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 
 export default function Cadastro(){
 
@@ -43,6 +43,7 @@ export default function Cadastro(){
     }
   };
 
+  const router = useRouter();
   return(
     <View
       style={{
@@ -53,9 +54,13 @@ export default function Cadastro(){
         width: '100%'
       }} 
     >
-      <Link href='/' style={{ flexDirection: 'row', alignItems: 'center', marginTop:-100, marginRight:290 }}>
+      {/* <Link href='/' style={{ flexDirection: 'row', alignItems: 'center', marginTop:-100, marginRight:290 }}>
           <Ionicons name="chevron-back-circle-outline" size={30} color="white" />
-      </Link>
+      </Link> */}
+      <TouchableOpacity onPress={() => router.push('/desenhoIndividualForum')} 
+      style={{ flexDirection: 'row', alignItems: 'center', marginTop:-100, marginRight:290 }}>
+        <Ionicons name="chevron-back-circle-outline" size={30} color="white" />
+      </TouchableOpacity>
 
        <View
         style={{

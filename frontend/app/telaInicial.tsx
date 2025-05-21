@@ -18,7 +18,7 @@ export default function TelaInicial() {
                     alignItems: 'center',
                     width: '100%'
                 }}>
-                    <Imagem source={require('../assets/logo.png')}></Imagem>
+                    <Imagem source={require('./assets/logo.png')}></Imagem>
                     <Input title='Pesquise por motor, montadora ou carro: ' variant='mainScreen'></Input>
                     <Button text='Pesquisar' onPress={handlePesquisar}></Button>
                 </View>
