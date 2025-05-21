@@ -1,91 +1,68 @@
-import React, { useState, useEffect } from "react";
-import { View } from "react-native";
-import { PageTitle } from "../src/components/pageTitle";
-import { Input } from '../src/components/input';
-import  InputDeData  from "../src/components/dataEntry";
-import { Button } from '../src/components/button';
-import { NotificationSwitch } from "../src/components/notificationSwitch";
-import { ReturnButton } from "../src/components/returnButton";
-import { Link, useRouter } from "expo-router";
+import React, {useState} from "react";
+import { Input } from "../src/components/input"; 
+import { PageTitle } from "../src/components/pageTitle"; 
+import { Button } from "../src/components/button";
+import Imagem from "../src/components/image";
+import logo from "./assets/logo.png";
 
-export default function AlterarCadastro() {
-    const router = useRouter();
+import TextoLink from "../src/components/textoLink";
+import { View, Text, Alert } from "react-native";
+import { Link } from 'expo-router'
 
-    const [nome, setNome] = useState("");
-    const [email, setEmail] = useState("");
-    const [dataNascimento, setDataNascimento] = useState(new Date());
+export default function Login(){
 
-    useEffect(() => {
-        async function carregarUsuario() {
-            try {
-                const resposta = await fetch('http://localhost:5000/api/users/usuarios/:email');
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
 
-                if (!resposta.ok) {
-                    throw new Error("Erro ao buscar dados do usuário");
-                }
-                const dados = await resposta.json();
+  const handleLogin = async () => {
+    try {
+      const resposta = await fetch("http://200.17.101.34:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          senha
+        })
+      });
 
-                setNome(dados.nome);
-                setEmail(dados.email);
-                setDataNascimento(new Date(dados.dataNascimento));
-
-            } catch (error) {
-                console.error('Erro ao carregar dados do usuário:', error)
-            }
-        }
-        carregarUsuario();
-    }, []);
-
-    const handleAlterarCadastro = async () => {
-        await fetch('http://localhost/api/users/usuario/:id', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nome: nome,
-                email: email,
-                dataNascimento: dataNascimento,
-            }),
-        });
-    };
-
-    const handleAlterarSenha = () => {
-        router.push('alterarSenha');
+      const json = await resposta.json();
+      if (resposta.ok) {
+        Alert.alert("Sucesso", json.mensagem || "Login realizado com sucesso");
+      } else {
+        Alert.alert("Erro", json.erro || "Erro ao realizar login");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
     }
+  };
 
-    const handleLogoff = async () => {}
-    
-    return (
-        <View
-            style={{
-            flex: 1,
-            backgroundColor: '#155fbf',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            gap: 6
-        }}>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 60, width: '90%', paddingHorizontal: 16, marginBottom: 30}}>
-                <ReturnButton></ReturnButton>
-                <PageTitle text='Meu perfil'></PageTitle>
-            </View>
-            <Input title='Nome de usuário' value={nome} onChangeText={setNome}></Input>
-            <Input title='E-mail' value={email} onChangeText={setEmail}></Input>
-            <InputDeData value={dataNascimento} onChange={setDataNascimento}></InputDeData>
-            <View style= {{alignSelf: 'flex-start', marginLeft: '12%', marginVertical: 16}}>
-                <NotificationSwitch></NotificationSwitch>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
-                <Link href={'/alterarSenha'}>   
-                    <Button text='Alterar senha' onPress={handleAlterarSenha} variant="textButton"></Button>
-                </Link>
-                <Link href={'/index'}>
-                    <Button text='Sair da conta' onPress={handleLogoff} variant="logoffButton"></Button>
-                </Link>
-            </View>
-            <Button text='Salvar alterações' onPress={handleAlterarCadastro}></Button>
-        </View>
-    )
+  return(
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#155fbf',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+      }}
+    >
+      <Imagem source={logo} width={120} height={120} borderRadius={60} />        
+      {/*<Imagem source={{ uri: 'https://exemplo.com/logo.png' }} width={120} height={120} />  IMAGEM COM URL REMOTA/EXTERNA */}
+      <PageTitle text='The Blueprints'></PageTitle>
+      <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
+      <Input title="Senha" value={senha} onChangeText={setSenha}></Input>
+        <Button text='Entrar' onPress={handleLogin}></Button>
+      <Text style={{ color: 'white', marginTop: 20 }}>Não possui cadastro?</Text>
+      <Link href="/cadastro">
+        <Text style={{color: 'white', textDecorationLine: 'underline'}}>Cadastre-se aqui</Text>
+      </Link>
+      
 
+    </View>
+  
+  )
 }
+
