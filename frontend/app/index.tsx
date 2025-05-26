@@ -7,16 +7,18 @@ import logo from "./assets/logo.png";
 
 import TextoLink from "../src/components/textoLink";
 import { View, Text, Alert } from "react-native";
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router';
+
 
 export default function Login(){
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const router = useRouter()
 
   const handleLogin = async () => {
     try {
-      const resposta = await fetch("http://200.17.101.34:5000/api/users/login", {
+      const resposta = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -29,6 +31,7 @@ export default function Login(){
 
       const json = await resposta.json();
       if (resposta.ok) {
+        router.push('telaInicial')
         Alert.alert("Sucesso", json.mensagem || "Login realizado com sucesso");
       } else {
         Alert.alert("Erro", json.erro || "Erro ao realizar login");
