@@ -17,7 +17,6 @@ export default function TelaAlterarSenha() {
                     alignItems: 'center',
                     width: '100%',
                     gap: 5,
-                    marginVertical: 10
                 }}>
                     <PageTitle text='Alterar senha'></PageTitle>
                     <Input title='Senha atual: '></Input>
