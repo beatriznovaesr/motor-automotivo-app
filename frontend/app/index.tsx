@@ -55,7 +55,7 @@ export default function Login(){
       <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
       <Input title="Senha" value={senha} onChangeText={setSenha}></Input>
         <Button text='Entrar' onPress={handleLogin}></Button>
-      <Text style={{ color: 'white', marginTop: 20 }}>Não possui cadastro?</Text>
+      <Text style={{ color: 'white', marginTop: 100 }}>Não possui cadastro?</Text>
       <Link href="/cadastro">
         <Text style={{color: 'white', textDecorationLine: 'underline'}}>Cadastre-se aqui</Text>
       </Link>
