@@ -94,6 +94,7 @@ export class UserService {
         nome: user.nome,
         email: user.email,
         dataNascimento: user.dataNascimento,
+        notificacoesAtivadas: user.notificacoesAtivadas
       };
     } catch (error) {
       console.error('Erro ao obter dados do usuário:', error);

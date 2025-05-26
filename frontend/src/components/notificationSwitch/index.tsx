@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Text, Switch, StyleSheet, View } from 'react-native';
 
-export const NotificationSwitch = () => {
-    const [ativada, setAtivada] = useState(false);
+export const NotificationSwitch = ({ ativada, setAtivada }) => {
 
-    const acionarSwitch = () => setAtivada(estadoPassado => !estadoPassado);
+    const acionarSwitch = () => setAtivada(estadoAnterior => !estadoAnterior)
 
     return (
-        
         <View style= {{flexDirection: 'row', gap: 5 }}>
             <Text style= {style.text}>Notificações: </Text>
             <Switch

@@ -47,7 +47,7 @@ export class UserController {
       res.status(200).json(usuarioAlterado);
 
     } catch (error: any) {
-      res.status(400).json({erro: error.message});
+      res.status(400).json({ erro: error.message });
     }
   }
 

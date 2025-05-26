@@ -6,17 +6,20 @@ import  InputDeData  from "../src/components/dataEntry";
 import { Button } from '../src/components/button';
 import { NotificationSwitch } from "../src/components/notificationSwitch";
 import { ReturnButton } from "../src/components/returnButton";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
-import { useLocalSearchParams } from "expo-router";
+import { useUser } from "../contexts/userContext";
 
 export default function AlterarCadastro() {
     const router = useRouter();
-    const { userEmail } = useLocalSearchParams();
+    const { user } = useUser();
+    const userEmail = user?.email;
+
 
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [dataNascimento, setDataNascimento] = useState(new Date());
+    const [notificacoesAtivadas, setNotificacoesAtivadas] = useState(false);
 
     useEffect(() => {
         async function carregarUsuario() {
@@ -31,16 +34,17 @@ export default function AlterarCadastro() {
                 setNome(dados.nome);
                 setEmail(dados.email);
                 setDataNascimento(new Date(dados.dataNascimento));
+                setNotificacoesAtivadas(dados.notificacoesAtivadas);
 
             } catch (error) {
                 console.error('Falha ao carregar dados do usuário:', error)
             }
         }
         carregarUsuario();
-    }, []);
+    }, [email]);
 
     const handleAlterarCadastro = async () => {
-        await fetch('http://localhost/api/users/usuario/:id', {
+        await fetch(`http://localhost/api/users/usuario/:id`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,6 +53,7 @@ export default function AlterarCadastro() {
                 nome: nome,
                 email: email,
                 dataNascimento: dataNascimento,
+                notificacoesAtivadas: notificacoesAtivadas
             }),
         });
     };
@@ -80,7 +85,7 @@ export default function AlterarCadastro() {
             <Input title='E-mail' value={email} onChangeText={setEmail}></Input>
             <InputDeData value={dataNascimento} onChange={setDataNascimento}></InputDeData>
             <View style= {{alignSelf: 'flex-start', marginLeft: '12%', marginVertical: 16}}>
-                <NotificationSwitch></NotificationSwitch>
+                <NotificationSwitch ativada={notificacoesAtivadas} setAtivada={setNotificacoesAtivadas}></NotificationSwitch>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
                 <Button text='Alterar senha' onPress={handleAlterarSenha} variant="textButton"></Button>
