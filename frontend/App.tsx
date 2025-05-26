@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import  Cadastro  from './app/cadastro.tsx';
+import { UserProvider } from './contexts/userContext';
 
 import { useFonts, RobotoSerif_400Regular,
   RobotoSerif_700Bold,
@@ -14,10 +15,12 @@ export default function App() {
   });
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Cadastro></Cadastro>
-    </View>
+    <UserProvider>
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <Cadastro></Cadastro>
+      </View>
+    </UserProvider>
   );
 }
 

@@ -8,8 +8,11 @@ import { NotificationSwitch } from "../src/components/notificationSwitch";
 import { ReturnButton } from "../src/components/returnButton";
 import { Link, useRouter } from "expo-router";
 
+import { useLocalSearchParams } from "expo-router";
+
 export default function AlterarCadastro() {
     const router = useRouter();
+    const { userEmail } = useLocalSearchParams();
 
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
@@ -18,10 +21,10 @@ export default function AlterarCadastro() {
     useEffect(() => {
         async function carregarUsuario() {
             try {
-                const resposta = await fetch('http://localhost:5000/api/users/usuarios/:email');
+                const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${userEmail}`);
 
                 if (!resposta.ok) {
-                    throw new Error("Erro ao buscar dados do usuário");
+                    throw new Error("Falha ao buscar dados do usuário");
                 }
                 const dados = await resposta.json();
 
@@ -30,7 +33,7 @@ export default function AlterarCadastro() {
                 setDataNascimento(new Date(dados.dataNascimento));
 
             } catch (error) {
-                console.error('Erro ao carregar dados do usuário:', error)
+                console.error('Falha ao carregar dados do usuário:', error)
             }
         }
         carregarUsuario();

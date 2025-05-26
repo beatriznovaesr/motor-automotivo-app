@@ -9,11 +9,14 @@ import TextoLink from "../src/components/textoLink";
 import { View, Text, Alert } from "react-native";
 import { Link, useRouter } from 'expo-router';
 
+import { useUser } from '../contexts/UserContext';
 
 export default function Login(){
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
+  const { setUser } = useUser();
   const router = useRouter()
 
   const handleLogin = async () => {
@@ -31,6 +34,7 @@ export default function Login(){
 
       const json = await resposta.json();
       if (resposta.ok) {
+        setUser({ email })
         router.push('telaInicial')
         Alert.alert("Sucesso", json.mensagem || "Login realizado com sucesso");
       } else {
@@ -52,7 +56,7 @@ export default function Login(){
         width: '100%'
       }}
     >
-      <Imagem source={logo} width={120} height={120} borderRadius={60} />        
+      <Imagem source={logo} width={150} height={150} borderRadius={60} />        
       {/*<Imagem source={{ uri: 'https://exemplo.com/logo.png' }} width={120} height={120} />  IMAGEM COM URL REMOTA/EXTERNA */}
       <PageTitle text='The Blueprints'></PageTitle>
       <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
