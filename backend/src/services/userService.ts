@@ -91,6 +91,7 @@ export class UserService {
         throw new Error('Usuário não encontrado');
       }
       return {
+        id: user._id.toString(),
         nome: user.nome,
         email: user.email,
         dataNascimento: user.dataNascimento,

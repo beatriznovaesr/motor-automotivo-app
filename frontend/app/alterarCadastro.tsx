@@ -15,7 +15,7 @@ export default function AlterarCadastro() {
     const { user } = useUser();
     const userEmail = user?.email;
 
-
+    const [id, setId] = useState("");
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [dataNascimento, setDataNascimento] = useState(new Date());
@@ -35,27 +35,39 @@ export default function AlterarCadastro() {
                 setEmail(dados.email);
                 setDataNascimento(new Date(dados.dataNascimento));
                 setNotificacoesAtivadas(dados.notificacoesAtivadas);
+                setId(dados.id);
 
             } catch (error) {
                 console.error('Falha ao carregar dados do usuário:', error)
             }
         }
         carregarUsuario();
-    }, [email]);
+    }, [userEmail]);
 
     const handleAlterarCadastro = async () => {
-        await fetch(`http://localhost/api/users/usuario/:id`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nome: nome,
-                email: email,
-                dataNascimento: dataNascimento,
-                notificacoesAtivadas: notificacoesAtivadas
-            }),
-        });
+        try {
+            const resposta = await fetch(`http://localhost:5000/api/users/usuario/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    dataNascimento: dataNascimento,
+                    notificacoesAtivadas: notificacoesAtivadas
+                }),
+            });
+
+            if (!resposta.ok) {
+                throw new Error("Erro ao atualizar cadastro");
+            }
+            alert("Cadastro atualizado com sucesso!");
+
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao atualizar cadastro");
+        }
     };
 
     const handleAlterarSenha = () => {
