@@ -12,7 +12,7 @@ import { useUser } from "../contexts/userContext";
 
 export default function AlterarCadastro() {
     const router = useRouter();
-    const { user } = useUser();
+    const { user, setUser } = useUser();
     const userEmail = user?.email;
 
     const [id, setId] = useState("");
@@ -74,9 +74,9 @@ export default function AlterarCadastro() {
         router.push('alterarSenha');
     }
 
-    const handleLogoff = () => {
-        //VERIFICAR SE OS DADOS DO USUÁRIO SALVOS NO GET DE LOGIN IRÃO ATRAPALHAR NOVO LOGIN
-        router.replace('/index');
+    const handleLogoff = async () => {
+        setUser(null);
+        router.replace('/');
     }
     
     return (
