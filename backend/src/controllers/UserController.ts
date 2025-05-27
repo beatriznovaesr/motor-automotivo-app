@@ -51,4 +51,18 @@ export class UserController {
     }
   }
 
+  async alterarSenha(req: Request, res: Response) {
+    try {
+      const { email } = req.params;
+      const { senhaAtual, senhaNova, senhaConfirmada } = req.body;
+
+      await userVM.alterarSenha(email, senhaAtual, senhaNova, senhaConfirmada);
+
+      res.status(200).json({ mensagem: "Senha alterada com sucesso!" });
+      
+    } catch (error: any) {
+      res.status(400).json({ erro: error.message });
+    }
+  }
+
 }

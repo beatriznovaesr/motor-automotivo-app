@@ -36,6 +36,7 @@ export const Input = forwardRef<RNTextInput, Props>(({ title, placeholder, secur
           style={style.input}
           placeholder={placeholder}
           placeholderTextColor='#A6A6A6'
+          secureTextEntry={shouldHideText}
           {...rest}
         />
         {showVisibilityToggle && (

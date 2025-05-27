@@ -114,4 +114,36 @@ export class UserService {
     }
   }
 
+  //Tela alterarSenha - Permite alterar a senha do usuário
+  async alterarSenha(email: string, senhaAtual: string, senhaNova: string, senhaConfirmada: string) {
+    try {
+      const usuario = await User.findOne({ email })
+      if (!usuario) {
+        throw new Error('Usuário não encontrado');
+      }
+        
+      const senhaAtualValida = await bcrypt.compare(senhaAtual, usuario.senha);
+      if (!senhaAtualValida) {
+        throw new Error('Senha atual incorreta');
+      }
+
+      if (senhaNova !== senhaConfirmada) {
+        throw new Error('Senha nova e confirmação de senha diferentes');
+      }
+
+      const senhaAtualIgualNova = await bcrypt.compare(senhaNova, usuario.senha);
+      if (senhaAtualIgualNova) {
+        throw new Error('Senha nova não pode ser igual à atual');
+      }
+
+      const novaSenhaHash = await bcrypt.hash(senhaNova, 10);
+      usuario.senha = novaSenhaHash;
+      await usuario.save();
+      console.log("Senha alterada com sucesso")
+
+    } catch (error: any) {
+      console.error("Erro ao atualizar senha:", error.message)
+      throw error;
+    }
+  }
 }

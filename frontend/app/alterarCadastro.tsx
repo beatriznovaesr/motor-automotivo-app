@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Alert } from "react-native";
 import { PageTitle } from "../src/components/pageTitle";
 import { Input } from '../src/components/input';
 import  InputDeData  from "../src/components/dataEntry";
@@ -46,7 +46,7 @@ export default function AlterarCadastro() {
 
     const handleAlterarCadastro = async () => {
         try {
-            const resposta = await fetch(`http://localhost:5000/api/users/usuario/${id}`, {
+            const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,19 +59,25 @@ export default function AlterarCadastro() {
                 }),
             });
 
+            const mensagem = await resposta.json();
+
             if (!resposta.ok) {
-                throw new Error("Erro ao atualizar cadastro");
+                const mensagemErro = mensagem.erro || "Erro ao atualizar cadastro";
+                throw new Error(mensagemErro);
             }
-            alert("Cadastro atualizado com sucesso!");
+
+            const mensagemSucesso = mensagem.sucesso || "Cadastro atualizado com sucesso!";
+            console.log('Cadastro atualizado com sucesso');
+            Alert.alert(mensagemSucesso);
 
         } catch (error) {
             console.error(error);
-            alert("Erro ao atualizar cadastro");
+            Alert.alert("Erro ao atualizar cadastro");
         }
     };
 
     const handleAlterarSenha = () => {
-        router.push('alterarSenha');
+        router.push('/alterarSenha');
     }
 
     const handleLogoff = async () => {
