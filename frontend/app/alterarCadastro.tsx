@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import { useUser } from "../src/contexts/userContext";
+
 import { PageTitle } from "../src/components/pageTitle";
 import { Input } from '../src/components/input';
 import  InputDeData  from "../src/components/dataEntry";
 import { Button } from '../src/components/button';
 import { NotificationSwitch } from "../src/components/notificationSwitch";
 import { ReturnButton } from "../src/components/returnButton";
-import { useRouter } from "expo-router";
-
-import { useUser } from "../contexts/userContext";
+import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 
 export default function AlterarCadastro() {
     const router = useRouter();
@@ -93,7 +94,8 @@ export default function AlterarCadastro() {
             justifyContent: 'center',
             alignItems: 'center',
             width: '100%',
-            gap: 6
+            gap: 6,
+            paddingBottom: 80
         }}>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 60, width: '90%', paddingHorizontal: 16, marginBottom: 30}}>
                 <ReturnButton></ReturnButton>
@@ -110,6 +112,7 @@ export default function AlterarCadastro() {
                 <Button text='Sair da conta' onPress={handleLogoff} variant="logoffButton"></Button>
             </View>
             <Button text='Salvar alterações' onPress={handleAlterarCadastro}></Button>
+            <NavigationMenu/>
         </View>
     )
 

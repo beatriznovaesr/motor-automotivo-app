@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { View } from 'react-native';
+
 import { Input } from '../src/components/input';
 import { Button } from '../src/components/button';
 import  Imagem  from '../src/components/image';
+import { NavigationMenu } from '../src/components/navigationMenu/navigationMenu';
 
-import { useRouter } from 'expo-router';
 import AlterarCadastro from './alterarCadastro';
 
 export default function TelaInicial() {
@@ -15,7 +17,6 @@ export default function TelaInicial() {
         //MODIFICAR POSTERIORMENTE
         router.push('alterarCadastro')
     }
-
 
     return (
                 <View
@@ -30,6 +31,7 @@ export default function TelaInicial() {
                     <Imagem source={require('./assets/logo.png')} width={150} height={150} borderRadius={60}></Imagem>
                     <Input title='Pesquise por motor, montadora ou carro: ' variant='mainScreen'></Input>
                     <Button text='Pesquisar' onPress={handlePesquisar}></Button>
+                    <NavigationMenu/>
                 </View>
     );
 

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { View, Alert } from "react-native";
+import { useUser } from "../src/contexts/userContext";
+
 import { Input } from '../src/components/input';
 import { Button } from '../src/components/button';
 import { PageTitle } from "../src/components/pageTitle";
 import { ReturnButton } from "../src/components/returnButton";
-
-import { useUser } from "../contexts/userContext";
+import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 
 export default function TelaAlterarSenha() {
     const { user } = useUser();
@@ -44,38 +45,40 @@ export default function TelaAlterarSenha() {
     };
 
     return (
-                <View
-                    style={{
-                    flex: 1,
-                    backgroundColor: '#155fbf',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    gap: 5,
-                }}>
-                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 40, width: '90%', paddingHorizontal: 14, marginBottom: 30}}>
-                        <ReturnButton></ReturnButton>
-                        <PageTitle text='Alterar senha'></PageTitle>
-                    </View>
-                    <Input 
-                        title='Senha atual: ' 
-                        value={senhaAtual} 
-                        onChangeText={setSenhaAtual}  
-                        showVisibilityToggle>   
-                    </Input>
-                    <Input 
-                        title='Nova senha: ' 
-                        value={senhaNova} 
-                        onChangeText={setSenhaNova}  
-                        showVisibilityToggle>
-                    </Input>
-                    <Input 
-                        title='Confirme a nova senha: ' 
-                        value={senhaConfirmada} 
-                        onChangeText={setSenhaConfirmada} 
-                        showVisibilityToggle>
-                    </Input>
-                    <Button text='Salvar nova senha' onPress={handleNovaSenha}></Button>
-                </View>
+        <View
+            style={{
+                flex: 1,
+                backgroundColor: '#155fbf',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                gap: 5,
+                paddingBottom: 80
+            }}>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 40, width: '90%', paddingHorizontal: 14, marginBottom: 30}}>
+                <ReturnButton></ReturnButton>
+                <PageTitle text='Alterar senha'></PageTitle>
+            </View>
+            <Input 
+                title='Senha atual: ' 
+                value={senhaAtual} 
+                onChangeText={setSenhaAtual}  
+                showVisibilityToggle>   
+            </Input>
+            <Input 
+                title='Nova senha: ' 
+                value={senhaNova} 
+                onChangeText={setSenhaNova}                      
+                showVisibilityToggle>
+            </Input>
+            <Input 
+                title='Confirme a nova senha: ' 
+                value={senhaConfirmada} 
+                onChangeText={setSenhaConfirmada}                     
+                showVisibilityToggle>
+            </Input>
+            <Button text='Salvar nova senha' onPress={handleNovaSenha}></Button>
+            <NavigationMenu/>                
+        </View>
     );
 }

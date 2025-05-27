@@ -9,7 +9,7 @@ import TextoLink from "../src/components/textoLink";
 import { View, Text, Alert } from "react-native";
 import { Link, useRouter } from 'expo-router';
 
-import { useUser } from '../contexts/userContext';
+import { useUser } from '../src/contexts/userContext';
 
 export default function Login(){
 

@@ -1,7 +1,7 @@
 import { Slot } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useFonts, RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
-import { UserProvider } from '../contexts/userContext';
+import { UserProvider } from '../src/contexts/userContext';
 
 
 export default function Layout() {
