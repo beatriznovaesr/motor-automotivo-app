@@ -52,10 +52,11 @@ export default function TelaAlterarSenha() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 width: '100%',
-                gap: 5,
-                paddingBottom: 80
+                gap: 10,
+                paddingBottom: 80,
+                paddingTop: 100
             }}>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 40, width: '90%', paddingHorizontal: 14, marginBottom: 30}}>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 38, width: '100%', paddingHorizontal: 40, marginBottom: 30, position: 'absolute', top: 180,  left: 0, right: 0}}>
                 <ReturnButton></ReturnButton>
                 <PageTitle text='Alterar senha'></PageTitle>
             </View>

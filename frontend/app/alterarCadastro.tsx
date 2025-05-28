@@ -95,9 +95,10 @@ export default function AlterarCadastro() {
             alignItems: 'center',
             width: '100%',
             gap: 6,
-            paddingBottom: 80
+            paddingBottom: 80,
+            paddingTop: 100
         }}>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 60, width: '90%', paddingHorizontal: 16, marginBottom: 30}}>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 60, width: '100%', paddingHorizontal: 40, marginBottom: 30, position: 'absolute', top: 180, left: 0, right: 0}}>
                 <ReturnButton></ReturnButton>
                 <PageTitle text='Meu perfil'></PageTitle>
             </View>
