@@ -44,8 +44,7 @@ export default function TelaInicial() {
             if (resposta.ok) {
 
                 if (json.length > 0) {
-                    //SUBSTITUIR PELA TELA DE RESULTADOS
-                    router.push('alterarCadastro')
+                    router.push('resultadoPesquisa')
                 } else {
                     setNenhumResultado(true);
                     setPalavraPesquisada('');

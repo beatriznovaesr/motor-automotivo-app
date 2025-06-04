@@ -54,10 +54,8 @@ export default function Cadastro(){
         width: '100%'
       }} 
     >
-      {/* <Link href='/' style={{ flexDirection: 'row', alignItems: 'center', marginTop:-100, marginRight:290 }}>
-          <Ionicons name="chevron-back-circle-outline" size={30} color="white" />
-      </Link> */}
-      <TouchableOpacity onPress={() => router.push('/desenhoIndividualForum')} 
+      
+      <TouchableOpacity onPress={() => router.push('/telaInicial')} 
       style={{ flexDirection: 'row', alignItems: 'center', marginTop:-100, marginRight:290 }}>
         <Ionicons name="chevron-back-circle-outline" size={30} color="white" />
       </TouchableOpacity>

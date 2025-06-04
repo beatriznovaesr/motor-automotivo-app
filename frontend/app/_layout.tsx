@@ -2,6 +2,8 @@ import { Slot } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useFonts, RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { UserProvider } from '../src/contexts/userContext';
+import * as React from 'react';
+import { PaperProvider } from 'react-native-paper';
 
 
 export default function Layout() {
@@ -12,11 +14,13 @@ export default function Layout() {
 
   if (!fontsLoaded) return null;
   return (
-    <UserProvider>
+    <PaperProvider>
+      <UserProvider>
       <View style={styles.container}>
         <Slot /> {/* Aqui as telas aparecem */}
       </View>
-    </UserProvider>
+      </UserProvider>
+    </PaperProvider>
   );
 }
 

@@ -2,10 +2,10 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "jsx": "react-native"
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-native"
   },
-    "include": [
+  "include": [
     "src",
     "src/images.d.ts",
     "app",
@@ -13,4 +13,3 @@
     "app/index.tsx"
   ]
 }
-
