@@ -21,7 +21,7 @@ export default function Login(){
 
   const handleLogin = async () => {
     try {
-      const resposta = await fetch("http://localhost:5000/api/users/login", {
+      const resposta = await fetch("http://10.0.2.2:5000/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
