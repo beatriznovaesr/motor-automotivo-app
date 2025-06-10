@@ -39,7 +39,7 @@ export default function Cadastro(){
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
+      Alert.alert("Erro", "Erro de conexão com a internet");
     }
   };
 
