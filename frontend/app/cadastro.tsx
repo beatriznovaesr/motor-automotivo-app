@@ -5,7 +5,8 @@ import  InputDeData  from "../src/components/dataEntry";
 import { PageTitle } from "../src/components/pageTitle";
 import { Button } from "../src/components/button";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Link, useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router';
+import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
 
 export default function Cadastro(){
 
@@ -14,6 +15,7 @@ export default function Cadastro(){
   const [dataNascimento, setDataNascimento] = useState(new Date());
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [isModalVisible, setModalVisible] = useState(false); 
 
   const handleCadastro = async () => {
     try {
@@ -39,8 +41,13 @@ export default function Cadastro(){
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Erro de conexão com a internet");
+      setModalVisible(true);
+      //Alert.alert("Erro", "Erro de conexão com a internet! Tente novamente mais tarde.");
     }
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   const router = useRouter();
@@ -77,6 +84,11 @@ export default function Cadastro(){
       <Input title="Confirme sua senha" value={confirmarSenha} onChangeText={setConfirmarSenha} secureTextEntry={true} showVisibilityToggle></Input>
       <Button text='Cadastrar' onPress={handleCadastro}></Button>
       </View>
+
+      <ConnectionErrorModal
+        visible={isModalVisible}
+        onClose={closeModal}
+      />
     </View>
   
   )

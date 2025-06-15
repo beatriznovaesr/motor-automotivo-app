@@ -4,6 +4,7 @@ import { PageTitle } from "../src/components/pageTitle";
 import { Button } from "../src/components/button";
 import Imagem from "../src/components/image";
 import logo from "./assets/logo.png";
+import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
 
 import TextoLink from "../src/components/textoLink";
 import { View, Text, Alert } from "react-native";
@@ -15,6 +16,7 @@ export default function Login(){
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [isModalVisible, setModalVisible] = useState(false); 
 
   const { setUser } = useUser();
   const router = useRouter()
@@ -42,8 +44,13 @@ export default function Login(){
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
+      setModalVisible(true);
+      //Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
     }
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return(
@@ -67,6 +74,10 @@ export default function Login(){
         <Text style={{color: 'white', textDecorationLine: 'underline'}}>Cadastre-se aqui</Text>
       </Link>
       
+      <ConnectionErrorModal
+        visible={isModalVisible}
+        onClose={closeModal}
+      />
 
     </View>
   
