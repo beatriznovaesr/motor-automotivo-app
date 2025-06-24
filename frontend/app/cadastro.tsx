@@ -16,8 +16,43 @@ export default function Cadastro(){
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [isModalVisible, setModalVisible] = useState(false); 
+  
+  const validarEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validarSenha = (senha: string) => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Mínimo 8 caracteres, pelo menos 1 letra e 1 número
+    return regex.test(senha);
+  };
 
   const handleCadastro = async () => {
+
+    // Campos obrigatórios
+    if (!nome || !email || !dataNascimento || !senha || !confirmarSenha) {
+      Alert.alert("Erro", "Todos os campos são obrigatórios.");
+      return;
+    }
+
+    // Formato de e-mail
+    if (!validarEmail(email)) {
+      Alert.alert("Erro", "Informe um e-mail válido.");
+      return;
+    }
+
+    // Força mínima da senha
+    if (!validarSenha(senha)) {
+      Alert.alert("Erro", "A senha deve ter pelo menos 8 caracteres e conter letras e números.");
+      return;
+    }
+
+    // Confirmação de senha
+    if (senha !== confirmarSenha) {
+      Alert.alert("Erro", "As senhas não coincidem.");
+      return;
+    }
+
     try {
       const resposta = await fetch("http://10.0.2.2:5000/api/users/cadastro", {
         method: "POST",
