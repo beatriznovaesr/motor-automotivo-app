@@ -11,10 +11,13 @@ export class UserService {
 
     try {
 
-      //Verificação se o usuário existe por email
+      // Validação: Usuário não cadastrado
       const user = await User.findOne({ email });
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        const error: any = new Error('Usuário não cadastrado');
+        error.statusCode = 404;
+        throw error;
+        // throw new Error('Usuário não cadastrado');
       }
   
       // Validação de senha
@@ -23,14 +26,28 @@ export class UserService {
       }*/
 
       const senhaCorreta = await bcrypt.compare(senha, user.senha);
+
+      // Validação: Senha incorreta
       if (!senhaCorreta) {
-        throw new Error('Senha incorreta');
+        const error: any = new Error('E-mail ou senha incorretos');
+        error.statusCode = 401;
+        throw error;
+        // throw new Error('Senha incorreta');
       }
   
       // Sucesso
       return { mensagem: 'Login realizado com sucesso', user };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao realizar login:', error);
+
+      if (error.message === 'Usuário não cadastrado') {
+        throw error;
+      }
+
+      if (error.message === 'E-mail ou senha incorretos') {
+        throw error;
+      }
+
       throw new Error('Erro interno no servidor');
     }
   }

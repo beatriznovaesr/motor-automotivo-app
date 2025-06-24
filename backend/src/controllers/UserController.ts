@@ -19,8 +19,18 @@ export class UserController {
       const resultado = await userVM.loginUser(req.body);
       res.status(201).json(resultado);
     } catch (error: any) {
-      //mensagem de falha para o login
-      res.status(400).json({ erro: error.message });
+      console.error('Erro no login:', error);
+
+      if (error.statusCode === 404) {
+        res.status(404).json({ erro: 'Usuário não cadastrado' });
+      } else if (error.statusCode === 401) {
+        res.status(401).json({ erro: 'E-mail ou senha incorretos' });
+      } else {
+        res.status(500).json({ erro: 'Erro interno no servidor' });
+      }
+      
+      // mensagem de falha para o login
+      // res.status(400).json({ erro: error.message });
     }
   }
 
