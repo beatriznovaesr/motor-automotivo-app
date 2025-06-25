@@ -17,13 +17,7 @@ export class UserService {
         const error: any = new Error('Usuário não cadastrado');
         error.statusCode = 404;
         throw error;
-        // throw new Error('Usuário não cadastrado');
       }
-  
-      // Validação de senha
-      /*if (user.senha !== senha) {
-        throw new Error('Senha incorreta');
-      }*/
 
       const senhaCorreta = await bcrypt.compare(senha, user.senha);
 
@@ -32,10 +26,8 @@ export class UserService {
         const error: any = new Error('E-mail ou senha incorretos');
         error.statusCode = 401;
         throw error;
-        // throw new Error('Senha incorreta');
       }
   
-      // Sucesso
       return { mensagem: 'Login realizado com sucesso', user };
     } catch (error: any) {
       console.error('Erro ao realizar login:', error);

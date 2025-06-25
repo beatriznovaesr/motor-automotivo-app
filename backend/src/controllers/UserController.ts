@@ -28,9 +28,6 @@ export class UserController {
       } else {
         res.status(500).json({ erro: 'Erro interno no servidor' });
       }
-      
-      // mensagem de falha para o login
-      // res.status(400).json({ erro: error.message });
     }
   }
 
