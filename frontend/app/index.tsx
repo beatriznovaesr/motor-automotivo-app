@@ -92,7 +92,7 @@ export default function Login(){
       <Imagem source={logo} width={150} height={150} borderRadius={60} />        
       <PageTitle text='The Blueprints'></PageTitle>
       <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
-      <Input title="Senha" value={senha} onChangeText={setSenha}></Input>
+      <Input title="Senha" value={senha} onChangeText={setSenha} secureTextEntry={true} showVisibilityToggle></Input>
         <Button text='Entrar' onPress={handleLogin}></Button>
       <Text style={{ color: 'white', marginTop: 100 }}>Não possui cadastro?</Text>
       <Link href="/cadastro">

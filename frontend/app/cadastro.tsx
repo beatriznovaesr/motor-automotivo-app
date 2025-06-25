@@ -10,13 +10,14 @@ import ConnectionErrorModal from "../src/components/connectionError/ConnectionEr
 
 export default function Cadastro(){
 
+  const router = useRouter();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [dataNascimento, setDataNascimento] = useState(new Date());
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [isModalVisible, setModalVisible] = useState(false); 
-  
+
   const validarEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -85,7 +86,6 @@ export default function Cadastro(){
     setModalVisible(false);
   };
 
-  const router = useRouter();
   return(
     <View
       style={{
