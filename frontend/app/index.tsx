@@ -4,8 +4,8 @@ import { PageTitle } from "../src/components/pageTitle";
 import { Button } from "../src/components/button";
 import Imagem from "../src/components/image";
 import logo from "./assets/logo.png";
+import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
 
-import TextoLink from "../src/components/textoLink";
 import { View, Text, Alert } from "react-native";
 import { Link, useRouter } from 'expo-router';
 
@@ -15,13 +15,32 @@ export default function Login(){
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [isModalVisible, setModalVisible] = useState(false); 
 
   const { setUser } = useUser();
   const router = useRouter()
 
+  const validarEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   const handleLogin = async () => {
+
+    // Validação de campos obrigatórios
+    if (!email || !senha) {
+      Alert.alert("Erro", "E-mail e senha são obrigatórios");
+      return;
+    }
+
+    // Validação de formato de e-mail
+    if (!validarEmail(email)) {
+      Alert.alert("Erro", "Informe um e-mail válido");
+      return;
+    }
+
     try {
-      const resposta = await fetch("http://192.168.15.66:5000/api/users/login", {
+      const resposta = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -38,12 +57,26 @@ export default function Login(){
         router.push('telaInicial')
         Alert.alert("Sucesso", json.mensagem || "Login realizado com sucesso");
       } else {
-        Alert.alert("Erro", json.erro || "Erro ao realizar login");
+        switch (resposta.status) {
+          case 404:
+            Alert.alert("Erro", "Usuário não cadastrado");
+            break;
+          case 401:
+            Alert.alert("Erro", "E-mail ou senha incorretos");
+            break;
+          default:
+            Alert.alert("Erro", json.erro || "Erro ao realizar login");
+        }
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
+      setModalVisible(true);
+      //Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
     }
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return(
@@ -57,16 +90,19 @@ export default function Login(){
       }}
     >
       <Imagem source={logo} width={150} height={150} borderRadius={60} />        
-      {/*<Imagem source={{ uri: 'https://exemplo.com/logo.png' }} width={120} height={120} />  IMAGEM COM URL REMOTA/EXTERNA */}
       <PageTitle text='The Blueprints'></PageTitle>
       <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
-      <Input title="Senha" value={senha} onChangeText={setSenha}></Input>
+      <Input title="Senha" value={senha} onChangeText={setSenha} secureTextEntry={true} showVisibilityToggle></Input>
         <Button text='Entrar' onPress={handleLogin}></Button>
       <Text style={{ color: 'white', marginTop: 100 }}>Não possui cadastro?</Text>
       <Link href="/cadastro">
         <Text style={{color: 'white', textDecorationLine: 'underline'}}>Cadastre-se aqui</Text>
       </Link>
       
+      <ConnectionErrorModal
+        visible={isModalVisible}
+        onClose={closeModal}
+      />
 
     </View>
   

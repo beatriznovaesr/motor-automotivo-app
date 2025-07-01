@@ -11,26 +11,35 @@ export class UserService {
 
     try {
 
-      //Verificação se o usuário existe por email
+      // Validação: Usuário não cadastrado
       const user = await User.findOne({ email });
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        const error: any = new Error('Usuário não cadastrado');
+        error.statusCode = 404;
+        throw error;
       }
-  
-      // Validação de senha
-      /*if (user.senha !== senha) {
-        throw new Error('Senha incorreta');
-      }*/
 
       const senhaCorreta = await bcrypt.compare(senha, user.senha);
+
+      // Validação: Senha incorreta
       if (!senhaCorreta) {
-        throw new Error('Senha incorreta');
+        const error: any = new Error('E-mail ou senha incorretos');
+        error.statusCode = 401;
+        throw error;
       }
   
-      // Sucesso
       return { mensagem: 'Login realizado com sucesso', user };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao realizar login:', error);
+
+      if (error.message === 'Usuário não cadastrado') {
+        throw error;
+      }
+
+      if (error.message === 'E-mail ou senha incorretos') {
+        throw error;
+      }
+
       throw new Error('Erro interno no servidor');
     }
   }
@@ -44,14 +53,32 @@ export class UserService {
   }) {
     const { nome, email, dataNascimento, senha, confirmarSenha } = data;
 
-    // verificação se senha e confirmar senha são iguais
-    await this.confirmarSenhaIgualSenha(senha, confirmarSenha);
+    // Campos obrigatórios
+    if (!nome || !email || !dataNascimento || !senha || !confirmarSenha) {
+      throw new Error('Todos os campos são obrigatórios.');
+    }
+
+    // Formato de e-mail
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Informe um e-mail válido.');
+    }
 
     // verifica se o usuário existe por email
     if (await this.usuarioExistente(email)) {
-      throw new Error('E-mail já está em uso');
+      throw new Error('E-mail já cadastrado.');
     }
 
+    // Força mínima da senha
+    const senhaRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!senhaRegex.test(senha)) {
+      throw new Error('A senha deve ter pelo menos 8 caracteres e conter letras e números.');
+    }
+    
+    // verificação se senha e confirmar senha são iguais
+    await this.confirmarSenhaIgualSenha(senha, confirmarSenha);
+
+    // Criptografa a senha
     const senhaHash = await bcrypt.hash(senha, 10);
 
     const novoUsuario = new User({
