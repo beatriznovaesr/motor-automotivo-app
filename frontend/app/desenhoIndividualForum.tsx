@@ -8,7 +8,7 @@ import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu"
 import { PageTitle } from "../src/components/pageTitle";
 
 export default function MotorDetalhado() {
-  const params = useLocalSearchParams();
+  const params = useLocalSearchParams(); 
   const motor = JSON.parse(Array.isArray(params.motor) ? params.motor[0] : params.motor);
   const [modalAdicionarComentVisible, setModalAdicionarComentVisible] = useState(false);
   const [novoComentario, setNovoComentario] = useState("");
