@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { View, Text, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-
 import { Input } from '../src/components/input';
 import { Button } from '../src/components/button';
 import  Imagem  from '../src/components/image';
@@ -32,7 +31,7 @@ export default function TelaInicial() {
         setNenhumResultado(false);
         
         try {
-            const resposta = await fetch("http://localhost:5000/api/motors/procurar-motor", {
+            const resposta = await fetch("http://192.168.15.66:5000/api/motors/procurar-motor", {
                 method: 'POST', 
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,9 +41,11 @@ export default function TelaInicial() {
             const json = await resposta.json();
 
             if (resposta.ok) {
-
                 if (json.length > 0) {
-                    router.push('resultadoPesquisa')
+                    router.push({
+                    pathname: 'resultadoPesquisa',
+                    params: { motores: JSON.stringify(json) }
+                    });
                 } else {
                     setNenhumResultado(true);
                     setPalavraPesquisada('');
