@@ -41,13 +41,16 @@ export const style = StyleSheet.create({
     fontFamily: 'Roboto-serif',
     textShadowColor: '#000000',
     textShadowOffset: {width: 2, height: 2},
-    fontSize: 40,
-    color: '#FFFFFF'
+    fontSize: 34,
+    color: '#FFFFFF',
+    padding: 20
   },
 
   mainScreenFragment: {
+    marginLeft: 20,
     width: '80%',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 
 }) 

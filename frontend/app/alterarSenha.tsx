@@ -18,9 +18,26 @@ export default function TelaAlterarSenha() {
     const [senhaConfirmada, setSenhaConfirmada] = useState("");
     const [isModalVisible, setModalVisible] = useState(false);
 
+    const validarSenha = (senha: string) => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Mínimo 8 caracteres, pelo menos 1 letra e 1 número
+        return regex.test(senha);
+    };
+
     const handleNovaSenha = async () => {
+
+        if (senhaNova === senhaAtual) {
+            Alert.alert("Erro", "A senha nova não pode ser igual a atual")
+            return
+        }
+
+        if (!validarSenha(senhaNova)) {
+            Alert.alert("Erro", "A senha deve possuir pelo menos 8 caracteres letras e números")
+                        alert("Senha antiga igual atual")
+            return
+        }
+
         try {
-            const resposta = await fetch(`http://10.0.2.2:5000/api/users/usuarios/alterar-senha/${encodeURIComponent(userEmail)}`, {
+            const resposta = await fetch(`http://localhost:5000/api/users/usuarios/alterar-senha/${encodeURIComponent(userEmail)}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
