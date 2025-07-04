@@ -10,6 +10,7 @@ import { Button } from '../src/components/button';
 import { NotificationSwitch } from "../src/components/notificationSwitch";
 import { ReturnButton } from "../src/components/returnButton";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
+import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
 
 export default function AlterarCadastro() {
     const router = useRouter();
@@ -21,6 +22,7 @@ export default function AlterarCadastro() {
     const [email, setEmail] = useState("");
     const [dataNascimento, setDataNascimento] = useState(new Date());
     const [notificacoesAtivadas, setNotificacoesAtivadas] = useState(false);
+    const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         async function carregarUsuario() {
@@ -40,8 +42,10 @@ export default function AlterarCadastro() {
 
             } catch (error) {
                 console.error('Falha ao carregar dados do usuário:', error)
+                setModalVisible(true);
             }
-        }
+        }; 
+
         carregarUsuario();
     }, [userEmail]);
 
@@ -73,7 +77,8 @@ export default function AlterarCadastro() {
 
         } catch (error) {
             console.error(error);
-            Alert.alert("Erro ao atualizar cadastro");
+            setModalVisible(true);
+            //Alert.alert("Erro ao atualizar cadastro");
         }
     };
 
@@ -85,6 +90,10 @@ export default function AlterarCadastro() {
         setUser(null);
         router.replace('/');
     }
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
     
     return (
         <View
@@ -113,8 +122,8 @@ export default function AlterarCadastro() {
                 <Button text='Sair da conta' onPress={handleLogoff} variant="logoffButton"></Button>
             </View>
             <Button text='Salvar alterações' onPress={handleAlterarCadastro}></Button>
+            <ConnectionErrorModal visible={isModalVisible} onClose={closeModal}/>
             <NavigationMenu/>
         </View>
     )
-
 }
