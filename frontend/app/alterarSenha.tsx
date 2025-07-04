@@ -7,6 +7,7 @@ import { Button } from '../src/components/button';
 import { PageTitle } from "../src/components/pageTitle";
 import { ReturnButton } from "../src/components/returnButton";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
+import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
 
 export default function TelaAlterarSenha() {
     const { user } = useUser();
@@ -15,6 +16,7 @@ export default function TelaAlterarSenha() {
     const [senhaAtual, setSenhaAtual] = useState("");
     const [senhaNova, setSenhaNova] = useState("");
     const [senhaConfirmada, setSenhaConfirmada] = useState("");
+    const [isModalVisible, setModalVisible] = useState(false);
 
     const handleNovaSenha = async () => {
         try {
@@ -40,8 +42,13 @@ export default function TelaAlterarSenha() {
 
         } catch (error) {
             console.error(error);
-            Alert.alert("Erro ao atualizar senha:", error.message);
+            setModalVisible(true);
+            //Alert.alert("Erro ao atualizar senha:", error.message);
         }
+    };
+
+        const closeModal = () => {
+        setModalVisible(false);
     };
 
     return (
@@ -79,6 +86,7 @@ export default function TelaAlterarSenha() {
                 showVisibilityToggle>
             </Input>
             <Button text='Salvar nova senha' onPress={handleNovaSenha}></Button>
+            <ConnectionErrorModal visible={isModalVisible} onClose={closeModal}/>
             <NavigationMenu/>                
         </View>
     );
