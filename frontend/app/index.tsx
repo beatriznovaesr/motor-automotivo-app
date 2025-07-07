@@ -1,111 +1,174 @@
-import React, {useState} from "react";
-import { Input } from "../src/components/input"; 
-import { PageTitle } from "../src/components/pageTitle"; 
-import { Button } from "../src/components/button";
-import Imagem from "../src/components/image";
-import logo from "./assets/logo.png";
-import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
+import replyComment from "../src/components/replyComment/replyComment";
 
-import { View, Text, Alert } from "react-native";
-import { Link, useRouter } from 'expo-router';
+import {
+  useFonts,
+  RobotoSerif_400Regular,
+  RobotoSerif_700Bold,
+} from "@expo-google-fonts/roboto-serif";
 
-import { useUser } from '../src/contexts/userContext';
+import { useUser } from "../src/contexts/userContext";
 
-export default function Login(){
-
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [isModalVisible, setModalVisible] = useState(false); 
-
-  const { setUser } = useUser();
-  const router = useRouter()
-
-  const validarEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const handleLogin = async () => {
-
-    // Validação de campos obrigatórios
-    if (!email || !senha) {
-      Alert.alert("Erro", "E-mail e senha são obrigatórios");
-      return;
-    }
-
-    // Validação de formato de e-mail
-    if (!validarEmail(email)) {
-      Alert.alert("Erro", "Informe um e-mail válido");
-      return;
-    }
-
-    try {
-      const resposta = await fetch("http://localhost:5000/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email,
-          senha
-        })
-      });
-
-      const json = await resposta.json();
-      if (resposta.ok) {
-        setUser({ email })
-        router.push('telaInicial')
-        Alert.alert("Sucesso", json.mensagem || "Login realizado com sucesso");
-      } else {
-        switch (resposta.status) {
-          case 404:
-            Alert.alert("Erro", "Usuário não cadastrado");
-            break;
-          case 401:
-            Alert.alert("Erro", "E-mail ou senha incorretos");
-            break;
-          default:
-            Alert.alert("Erro", json.erro || "Erro ao realizar login");
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      setModalVisible(true);
-      //Alert.alert("Erro", "Não foi possível se conectar ao servidor.");
-    }
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  return(
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#155fbf',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%'
-      }}
-    >
-      <Imagem source={logo} width={150} height={150} borderRadius={60} />        
-      <PageTitle text='The Blueprints'></PageTitle>
-      <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
-      <Input title="Senha" value={senha} onChangeText={setSenha} secureTextEntry={true} showVisibilityToggle></Input>
-        <Button text='Entrar' onPress={handleLogin}></Button>
-      <Text style={{ color: 'white', marginTop: 100 }}>Não possui cadastro?</Text>
-      <Link href="/cadastro">
-        <Text style={{color: 'white', textDecorationLine: 'underline'}}>Cadastre-se aqui</Text>
-      </Link>
-      
-      <ConnectionErrorModal
-        visible={isModalVisible}
-        onClose={closeModal}
-      />
-
-    </View>
-  
-  )
+interface Notification {
+ _id: string;
+  message: string;
+  read?: boolean;
+  createdAt?: string;
 }
 
+const ReplyComment = replyComment;
+
+const Notifications: React.FC = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [hasNew, setHasNew] = useState(false);
+
+  const { user } = useUser();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+
+  const [fontsLoaded] = useFonts({
+    RobotoSerif_400Regular,
+    RobotoSerif_700Bold,
+  });
+
+  useEffect(() => {
+  const fetchNotifications = async () => {
+    try {
+      if (!user?.email) return;
+
+      const userRes = await fetch(`http://localhost:5000/users/email/${user.email}`);
+      const userData = await userRes.json();
+
+      if (!userData?._id) {
+        console.warn("Usuário não encontrado");
+        return;
+      }
+      
+      const notificationsRes = await fetch(`http://localhost:5000/api/notifications/${userData._id}`);
+      const notificationsData = await notificationsRes.json();
+
+      setNotifications(notificationsData);
+      setHasNew(notificationsData.some((n: Notification) => !n.read));
+    } catch (error) {
+      console.error("Erro ao buscar notificações:", error);
+    }
+  };
+
+  fetchNotifications();
+}, [user]);
+
+
+  if (!fontsLoaded) return null;
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.box}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Notificações</Text>
+          <MaterialCommunityIcons
+            name="bell-ring"
+            size={32}
+            color={hasNew ? "#facc15" : "#fff"}
+          />
+        </View>
+
+        <View style={styles.notificationList}>
+          {notifications.length === 0 ? (
+            <Text style={styles.emptyText}>
+              Nenhuma notificação no momento.
+            </Text>
+          ) : (
+            <FlatList
+              data={notifications}
+              keyExtractor={(item) => item._id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedNotification(item);
+                    setModalVisible(true);
+                  }}
+                  style={styles.notificationItem}
+                >
+                  <Text style={styles.notificationText}>{item.message}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+        </View>
+      </View>
+
+      <ReplyComment
+        visible={modalVisible}
+        message={selectedNotification?.message || ""}
+        onCancel={() => setModalVisible(false)}
+        onSave={(replyText) => {
+          console.log("Resposta enviada:", replyText);
+          setModalVisible(false);
+        }}
+      />
+
+
+      <NavigationMenu />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  box: {
+    width: "100%",
+    backgroundColor: "#ffffff",
+    flex: 1,
+  },
+  header: {
+    backgroundColor: "#155fbf",
+    paddingVertical: 40,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerText: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontFamily: "RobotoSerif_700Bold",
+  },
+  notificationList: {
+    backgroundColor: "#ffffff",
+    flex: 1,
+  },
+  notificationItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomColor: "#e5e7eb",
+    borderBottomWidth: 1,
+  },
+  notificationText: {
+    color: "#111827",
+    fontSize: 14,
+    fontFamily: "RobotoSerif_400Regular",
+  },
+  emptyText: {
+    padding: 16,
+    color: "#6b7280",
+    textAlign: "center",
+    fontFamily: "RobotoSerif_400Regular",
+  },
+});
+
+export default Notifications;
