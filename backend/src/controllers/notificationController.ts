@@ -46,6 +46,7 @@ export const markNotificationAsRead = async (req: Request, res: Response): Promi
 };
 
 export const handleCreateNotification = async (req: Request, res: Response): Promise<any> => {
+  console.log("Requisição recebida para buscar notificações:", req.params.userId);
   try {
     const { userId, message } = req.body;
     if (!userId || !message) {

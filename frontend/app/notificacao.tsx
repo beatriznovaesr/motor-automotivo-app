@@ -5,6 +5,8 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
@@ -19,7 +21,7 @@ import {
 import { useUser } from "../src/contexts/userContext";
 
 interface Notification {
- _id: string;
+  _id: string;
   message: string;
   read?: boolean;
   createdAt?: string;
@@ -32,7 +34,6 @@ const Notifications: React.FC = () => {
   const [hasNew, setHasNew] = useState(false);
 
   const { user } = useUser();
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
@@ -42,81 +43,81 @@ const Notifications: React.FC = () => {
   });
 
   useEffect(() => {
-  const fetchNotifications = async () => {
-    try {
-      if (!user?.email) return;
+    const fetchNotifications = async () => {
+      try {
+        if (!user?.email) return;
 
-      const userRes = await fetch(`http://localhost:5000/users/email/${user.email}`);
-      const userData = await userRes.json();
+        console.log("Buscando usuário com email:", user.email);
+        const userRes = await fetch(`http://localhost:5000/users/email/${user.email}`);
+        const userData = await userRes.json();
 
-      if (!userData?._id) {
-        console.warn("Usuário não encontrado");
-        return;
+        if (!userData?._id) {
+          console.warn("Usuário não encontrado");
+          return;
+        }
+
+        const notificationsRes = await fetch(`http://localhost:5000/api/notifications/${userData._id}`);
+        const notificationsData = await notificationsRes.json();
+
+        setNotifications(notificationsData);
+        setHasNew(notificationsData.some((n: Notification) => !n.read));
+      } catch (error) {
+        console.error("Erro ao buscar notificações:", error);
       }
-      
-      const notificationsRes = await fetch(`http://localhost:5000/api/notifications/${userData._id}`);
-      const notificationsData = await notificationsRes.json();
+    };
 
-      setNotifications(notificationsData);
-      setHasNew(notificationsData.some((n: Notification) => !n.read));
-    } catch (error) {
-      console.error("Erro ao buscar notificações:", error);
-    }
-  };
-
-  fetchNotifications();
-}, [user]);
-
+    fetchNotifications();
+  }, [user]);
 
   if (!fontsLoaded) return null;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.box}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Notificações</Text>
-          <MaterialCommunityIcons
-            name="bell-ring"
-            size={32}
-            color={hasNew ? "#facc15" : "#fff"}
+    <View style={styles.wrapper}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Notificações</Text>
+            <MaterialCommunityIcons
+              name="bell-ring"
+              size={32}
+              color={hasNew ? "#facc15" : "#fff"}
+            />
+          </View>
+
+          <View style={styles.notificationList}>
+            {notifications.length === 0 ? (
+              <Text style={styles.emptyText}>Nenhuma notificação no momento.</Text>
+            ) : (
+              <FlatList
+                scrollEnabled={false} // necessário com ScrollView pai
+                data={notifications}
+                keyExtractor={(item) => item._id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedNotification(item);
+                      setModalVisible(true);
+                    }}
+                    style={styles.notificationItem}
+                  >
+                    <Text style={styles.notificationText}>{item.message}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+
+          <ReplyComment
+            visible={modalVisible}
+            message={selectedNotification?.message || ""}
+            onCancel={() => setModalVisible(false)}
+            onSave={(replyText) => {
+              console.log("Resposta enviada:", replyText);
+              setModalVisible(false);
+            }}
           />
         </View>
-
-        <View style={styles.notificationList}>
-          {notifications.length === 0 ? (
-            <Text style={styles.emptyText}>
-              Nenhuma notificação no momento.
-            </Text>
-          ) : (
-            <FlatList
-              data={notifications}
-              keyExtractor={(item) => item._id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedNotification(item);
-                    setModalVisible(true);
-                  }}
-                  style={styles.notificationItem}
-                >
-                  <Text style={styles.notificationText}>{item.message}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          )}
-        </View>
-      </View>
-
-      <ReplyComment
-        visible={modalVisible}
-        message={selectedNotification?.message || ""}
-        onCancel={() => setModalVisible(false)}
-        onSave={(replyText) => {
-          console.log("Resposta enviada:", replyText);
-          setModalVisible(false);
-        }}
-      />
-
+      </ScrollView>
 
       <NavigationMenu />
     </View>
@@ -124,33 +125,50 @@ const Notifications: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  scrollContent: {
+    alignItems: "center",
+    width: "100%",
+    paddingBottom: 100,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  box: {
     width: "100%",
-    backgroundColor: "#ffffff",
-    flex: 1,
+    maxWidth: 480,
+    gap: 6,
   },
   header: {
-    backgroundColor: "#155fbf",
-    paddingVertical: 40,
-    paddingHorizontal: 16,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 50,
+    backgroundColor: "#155fbf",
+    width: "100%",
+    position: "relative",
   },
   headerText: {
     color: "#ffffff",
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "RobotoSerif_700Bold",
+    position: "absolute",
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    textShadowColor: "#000000aa",
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 4,
+    zIndex: -1, 
   },
   notificationList: {
+    width: "100%",
     backgroundColor: "#ffffff",
-    flex: 1,
   },
   notificationItem: {
     paddingVertical: 12,
@@ -164,7 +182,7 @@ const styles = StyleSheet.create({
     fontFamily: "RobotoSerif_400Regular",
   },
   emptyText: {
-    padding: 16,
+    padding: 24,
     color: "#6b7280",
     textAlign: "center",
     fontFamily: "RobotoSerif_400Regular",
