@@ -4,7 +4,6 @@ import { CommentsController } from '../controllers/commentsController';
 const router = express.Router();
 const commentsController = new CommentsController();
 
-// Rotas para comentários
 router.post('/comments', async (req, res) => {
   await commentsController.addComment(req, res);
 });

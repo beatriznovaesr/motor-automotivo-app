@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import NotificationModel from "../models/Notification";
 
-/**
- * GET /notifications/:userId
- * Buscar todas as notificações de um usuário
- */
+
 export const getNotifications = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
@@ -15,10 +12,7 @@ export const getNotifications = async (req: Request, res: Response) => {
   }
 };
 
-/**
- * POST /notifications
- * Adiciona uma nova notificação (chamada internamente por controllers)
- */
+
 export const createNotification = async (
   userId: string,
   message: string

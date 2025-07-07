@@ -16,7 +16,6 @@ const CommentSchema = new mongoose.Schema<Comment>({
   createdAt: { type: Date, default: Date.now }
 });
 
-// Facilita busca por texto no campo `text`
 CommentSchema.index({ text: 'text' });
 
 export default mongoose.model<Comment>('Comment', CommentSchema);

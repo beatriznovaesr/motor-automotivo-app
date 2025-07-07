@@ -10,6 +10,6 @@
     "src/images.d.ts",
     "app",
     "app/cadastro.tsx",
-    "app/index.tsx"
+    "app/notificacao.tsx"
   ]
 }
