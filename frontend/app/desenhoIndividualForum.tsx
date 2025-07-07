@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { Link, useLocalSearchParams } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -6,8 +6,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { ReturnButton } from "../src/components/returnButton";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 import { PageTitle } from "../src/components/pageTitle";
+import { useUser } from "../src/contexts/userContext";
 
 export default function MotorDetalhado() {
+  const { user, setUser } = useUser();
+  const userEmail = user?.email;
   const params = useLocalSearchParams(); 
   const motor = JSON.parse(Array.isArray(params.motor) ? params.motor[0] : params.motor);
   const [modalAdicionarComentVisible, setModalAdicionarComentVisible] = useState(false);
@@ -16,12 +19,43 @@ export default function MotorDetalhado() {
   const [respostaTexto, setRespostaTexto] = useState('');
   const [comentarioEditando, setComentarioEditando] = useState(null);
   const [comentarioNovoTexto, setComentarioNovoTexto] = useState('');
+  const [comentarios, setComentarios] = useState([]);
+
+  const [idUsuario, setId] = useState("");
+  const [nomeUsuario, setNome] = useState("");
+
+  useEffect(() => {
+          async function buscaUsuario() {
+              try {
+                  const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${userEmail}`);
   
-  const [comentarios, setComentarios] = useState([
-  { id: 1, usuario: 'usuário1', texto: 'Motor confiável e fácil de mexer', podeEditar: true },
-  { id: 2, usuario: 'usuário2', texto: 'Alguém sabe dizer quanto custa para fazer o cabeçote?', resposta: false },
-  { id: 3, usuario: 'usuário3', texto: '@usuário2 Depende do estrago', resposta: true }
-]);
+                  if (!resposta.ok) {
+                      throw new Error("Falha ao buscar dados do usuário");
+                  }
+                  const dados = await resposta.json();
+  
+                  setNome(dados.nomeUsuario);
+                  setId(dados.idUsuario);
+  
+              } catch (error) {
+                  console.error('Falha ao carregar dados do usuário:', error)
+              }
+          }; 
+          buscaUsuario();
+      }, [userEmail]);
+
+  useEffect(() => {
+  const buscarComentarios = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/motors/motor/${motor._id}/comentarios`);
+      const data = await response.json();
+      setComentarios(data);
+    } catch (err) {
+      console.error("Erro ao buscar comentários:", err);
+    }
+  };
+  buscarComentarios();
+}, []);
 
   return (
     <View style={{
@@ -179,12 +213,30 @@ export default function MotorDetalhado() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {
-              // Aqui você pode salvar o comentário no backend ou adicionar à lista
-              console.log("Comentário salvo:", novoComentario);
-              setModalAdicionarComentVisible(false);
-              setNovoComentario("");
+            onPress={async () => {
+              try {
+                console.log("AA", motor._id);
+                await fetch(`http://localhost:5000/api/motors/motor/${motor._id}/comentarios`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    usuario_id: idUsuario,
+                    usuario: nomeUsuario, 
+                    texto: novoComentario,
+                    resposta: false
+                  })
+                });
+                const resposta = await fetch(`http://localhost:5000/api/motors/motor/${motor._id}/comentarios`);
+                const atualizados = await resposta.json();
+                setComentarios(atualizados);
+                setNovoComentario('');
+                setModalAdicionarComentVisible(false);
+              } catch (err) {
+                console.error("Erro ao salvar comentárioO:", err);
+              }
             }}
+
+            
             style={{
               backgroundColor: '#64a9ff',
               paddingHorizontal: 20,

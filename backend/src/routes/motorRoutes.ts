@@ -5,5 +5,6 @@ const router = express.Router();
 const controller = new MotorController();
 
 router.post('/procurar-motor', controller.procurarMotor);
-
+router.get('/motor/:motorId/comentarios', controller.buscarComentarios);
+router.post('/motor/:motorId/comentarios', controller.adicionarComentario);
 export default router;
