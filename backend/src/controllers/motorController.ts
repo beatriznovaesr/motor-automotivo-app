@@ -16,17 +16,17 @@ export class MotorController {
         }
     }
 
-    async buscarComentarios(req: Request, res: Response) {
+    /*async buscarComentarios(req: Request, res: Response) {
         try {
-        console.log("CONTROLLER")
-        const motor = await motorVM.buscarComentarios(req.params.motorModelo);
+        console.log("CONTROLLER: buscarComentarios", req.params.motorId)
+        const motor = await motorVM.buscarComentarios(req.params.motorId);
         res.status(200).json(motor.comentarios || []);
         } catch (error: any) {
         res.status(500).json({ erro: error.message });
         }
-  }
+  }*/
 
-  async adicionarComentario(req: Request, res: Response) {
+  /*async adicionarComentario(req: Request, res: Response) {
         try {
         const { usuario_id, usuario, texto, resposta } = req.body;
         const comentario = { usuario_id, usuario, texto, resposta };
@@ -35,5 +35,5 @@ export class MotorController {
         } catch (error: any) {
         res.status(500).json({ erro: error.message });
         }
-  }
+  }*/
 }

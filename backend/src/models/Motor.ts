@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
+import CommentSchema from './Comments';
 
-export interface Comentario {
+/*export interface Comentario {
   usuario: string;
   texto: string;
   resposta?: boolean;
-}
+}*/
 
 export interface Motor {
   modelo: string;
@@ -12,14 +13,14 @@ export interface Motor {
   informacoes?: string;
   carro: string | string[];
   desenho: string | string[];
-  comentarios?: Comentario[]; // <-- novo campo
+  //comentarios?: [Comment]; // <-- novo campo
 }
 
-const ComentarioSchema = new mongoose.Schema<Comentario>({
+/*const ComentarioSchema = new mongoose.Schema<Comentario>({
   usuario: { type: String, required: true },
   texto: { type: String, required: true },
   resposta: { type: Boolean, default: false }
-});
+});*/
 
 const MotorSchema = new mongoose.Schema<Motor>({
   modelo: { type: String, required: true },
@@ -27,7 +28,7 @@ const MotorSchema = new mongoose.Schema<Motor>({
   informacoes: { type: String },
   carro: { type: mongoose.Schema.Types.Mixed, required: true },
   desenho: { type: mongoose.Schema.Types.Mixed, required: true },
-  comentarios: [ComentarioSchema] // <-- novo campo
+  //comentarios: [CommentSchema] // <-- novo campo
 });
 
 

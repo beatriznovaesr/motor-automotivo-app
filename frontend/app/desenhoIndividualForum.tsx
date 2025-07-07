@@ -8,6 +8,9 @@ import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu"
 import { PageTitle } from "../src/components/pageTitle";
 import { useUser } from "../src/contexts/userContext";
 
+//componente de adicionar comentário
+import AddComment from "../src/components/addComment/addComment";
+
 export default function MotorDetalhado() {
   const { user, setUser } = useUser();
   const userEmail = user?.email;
@@ -21,8 +24,15 @@ export default function MotorDetalhado() {
   const [comentarioNovoTexto, setComentarioNovoTexto] = useState('');
   const [comentarios, setComentarios] = useState([]);
 
-  const [idUsuario, setId] = useState("");
+  const [idUsuario, setIdUsuario] = useState("");
   const [nomeUsuario, setNome] = useState("");
+
+  //add comentário
+  const[addCommentModal, setAddCommentModal] = useState(false);
+
+  const cancelarComentario = () => {
+    setAddCommentModal(false);
+  };
 
   useEffect(() => {
           async function buscaUsuario() {
@@ -33,21 +43,20 @@ export default function MotorDetalhado() {
                       throw new Error("Falha ao buscar dados do usuário");
                   }
                   const dados = await resposta.json();
-  
                   setNome(dados.nomeUsuario);
-                  setId(dados.idUsuario);
+                  setIdUsuario(dados.id);
   
               } catch (error) {
                   console.error('Falha ao carregar dados do usuário:', error)
               }
           }; 
           buscaUsuario();
-      }, [userEmail]);
+      }, [userEmail]); 
 
   useEffect(() => {
   const buscarComentarios = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/motors/motor/${motor._id}/comentarios`);
+      const response = await fetch(`http://localhost:5000/api/comments/${motor._id}`);
       const data = await response.json();
       setComentarios(data);
     } catch (err) {
@@ -55,7 +64,31 @@ export default function MotorDetalhado() {
     }
   };
   buscarComentarios();
-}, []);
+}, []); 
+
+    const adicionarComentario = async (novoTexto: string) => {
+      //console.log(novoComentario)
+      try {
+        await fetch(`http://localhost:5000/api/comments/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          /*usuario_id: idUsuario,
+          usuario: nomeUsuario, 
+          texto: novoComentario,
+          resposta: false*/
+          userId: idUsuario,
+          motorId: motor._id,
+          text: novoTexto
+        })
+      });
+        const resposta = await fetch(`http://localhost:5000/api/comments/${motor._id}`);
+        const atualizados = await resposta.json();
+
+      } catch (err) {
+          console.error("Erro ao salvar comentário:", err);
+      }
+    };
 
   return (
     <View style={{
@@ -146,7 +179,8 @@ export default function MotorDetalhado() {
           elevation: 4,
           marginBottom:60
         }}
-          onPress={() => setModalAdicionarComentVisible(true)}>
+          onPress={() => setAddCommentModal(true)}>
+          <AddComment visible={addCommentModal} onCancel={cancelarComentario} onSave={adicionarComentario}></AddComment>
           <Text style={{ color: '#111', fontWeight: 'bold', fontSize: 16 }}>Adicionar comentário</Text>
         </TouchableOpacity>
 
@@ -213,30 +247,8 @@ export default function MotorDetalhado() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={async () => {
-              try {
-                console.log("AA", motor._id);
-                await fetch(`http://localhost:5000/api/motors/motor/${motor._id}/comentarios`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    usuario_id: idUsuario,
-                    usuario: nomeUsuario, 
-                    texto: novoComentario,
-                    resposta: false
-                  })
-                });
-                const resposta = await fetch(`http://localhost:5000/api/motors/motor/${motor._id}/comentarios`);
-                const atualizados = await resposta.json();
-                setComentarios(atualizados);
-                setNovoComentario('');
-                setModalAdicionarComentVisible(false);
-              } catch (err) {
-                console.error("Erro ao salvar comentárioO:", err);
-              }
-            }}
+            /*onPress={}*/
 
-            
             style={{
               backgroundColor: '#64a9ff',
               paddingHorizontal: 20,

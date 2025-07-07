@@ -14,7 +14,7 @@ interface Props {
   onSave: (newText: string) => void;
 }
 
-const addComment: React.FC<Props> = ({ visible, onCancel, onSave }) => {
+const AddComment: React.FC<Props> = ({ visible, onCancel, onSave }) => {
   const [newText, setNewText] = useState("");
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const addComment: React.FC<Props> = ({ visible, onCancel, onSave }) => {
   );
 };
 
-export default addComment;
+export default AddComment;
 
 const styles = StyleSheet.create({
   overlay: {

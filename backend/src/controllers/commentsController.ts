@@ -6,20 +6,33 @@ const commentsVM = new CommentsService();
 const notificationsVM = new NotificationService();
 
 export class CommentsController {
+
+  async buscarComentarios(req: Request, res: Response) {
+    try {
+      console.log("CONTROLLER: buscarComentarios", req.params.motorId)
+        const comments = await commentsVM.buscarComentarios(req.params.motorId);
+        res.status(200).json(comments || []);
+        } catch (error: any) {
+        res.status(500).json({ erro: error.message });
+        }
+    }
+
   async addComment(req: Request, res: Response) {
     try {
+      console.log("CONTROLLER: addComment", req.body)
       const { userId, motorId, text } = req.body;
 
       if (!text || !userId || !motorId) {
-        return res.status(400).json({ error: "Dados inválidos" });
+        res.status(400).json({ error: "Dados inválidos" });
+        return;
       }
 
       const comment = await commentsVM.addComment(userId, motorId, text);
-      return res.status(201).json(comment);
+      res.status(201).json(comment);
 
     } catch (error: any) {
       console.error("Erro ao adicionar comentário:", error);
-      return res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 

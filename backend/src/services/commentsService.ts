@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 import CommentModel, { Comment } from "../models/Comments";
 
 export class CommentsService {
-  async addComment(userId: number, motorId: number, text: string): Promise<Comment> {
+  async addComment(userId: string, motorId: string, text: string): Promise<Comment> {
     try {
+      console.log("CHEGANDO NO COMMENT SERVICE", userId, motorId, text)
       const newComment = new CommentModel({
         userId,
         motorId,
@@ -54,4 +55,14 @@ export class CommentsService {
       throw new Error("Erro ao editar comentário");
     }
   }
+
+    async buscarComentarios(motorId: string): Promise<Comment[]> {
+      console.log("Services: buscarComentarios", motorId)
+
+      const comentarios = await CommentModel.find({ motorId }).exec();
+
+      if (!comentarios) throw new Error("Motor não encontrado");
+      console.log(comentarios)
+      return comentarios;
+    }
 }
