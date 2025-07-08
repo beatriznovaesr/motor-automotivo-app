@@ -6,11 +6,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
-import replyComment from "../src/components/replyComment/replyComment";
+import { NavigationMenu } from "../navigationMenu/navigationMenu";
+import replyComment from "../replyComment/replyComment";
 
 import {
   useFonts,
@@ -18,7 +17,7 @@ import {
   RobotoSerif_700Bold,
 } from "@expo-google-fonts/roboto-serif";
 
-import { useUser } from "../src/contexts/userContext";
+import { useUser } from "../../contexts/userContext";
 
 interface Notification {
   _id: string;
@@ -29,7 +28,7 @@ interface Notification {
 
 const ReplyComment = replyComment;
 
-const Notifications: React.FC = () => {
+export const NotificationComponent: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasNew, setHasNew] = useState(false);
 
@@ -47,7 +46,6 @@ const Notifications: React.FC = () => {
       try {
         if (!user?.email) return;
 
-        console.log("Buscando usuário com email:", user.email);
         const userRes = await fetch(`http://localhost:5000/users/email/${user.email}`);
         const userData = await userRes.json();
 
@@ -56,7 +54,7 @@ const Notifications: React.FC = () => {
           return;
         }
 
-        const notificationsRes = await fetch(`http://localhost:5000/api/notifications/${userData._id}`);
+        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notificacoes/${userData._id}`);
         const notificationsData = await notificationsRes.json();
 
         setNotifications(notificationsData);
@@ -89,7 +87,7 @@ const Notifications: React.FC = () => {
               <Text style={styles.emptyText}>Nenhuma notificação no momento.</Text>
             ) : (
               <FlatList
-                scrollEnabled={false} // necessário com ScrollView pai
+                scrollEnabled={false}
                 data={notifications}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (
@@ -111,9 +109,18 @@ const Notifications: React.FC = () => {
             visible={modalVisible}
             message={selectedNotification?.message || ""}
             onCancel={() => setModalVisible(false)}
-            onSave={(replyText) => {
-              console.log("Resposta enviada:", replyText);
-              setModalVisible(false);
+            onSave={async (replyText) => {
+              try {
+                const res = await fetch(`http://localhost:5000/api/comments/reply/${selectedNotification?._id}`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ userId: user?._id, text: replyText })
+                });
+                if (!res.ok) throw new Error("Erro ao salvar resposta");
+                setModalVisible(false);
+              } catch (e) {
+                console.error(e);
+              }
             }}
           />
         </View>
@@ -164,7 +171,7 @@ const styles = StyleSheet.create({
     textShadowColor: "#000000aa",
     textShadowOffset: { width: 1, height: 2 },
     textShadowRadius: 4,
-    zIndex: -1, 
+    zIndex: -1,
   },
   notificationList: {
     width: "100%",
@@ -188,5 +195,3 @@ const styles = StyleSheet.create({
     fontFamily: "RobotoSerif_400Regular",
   },
 });
-
-export default Notifications;

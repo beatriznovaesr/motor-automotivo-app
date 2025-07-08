@@ -6,6 +6,9 @@ const commentsController = new CommentsController();
 
 router.get('/:motorId', commentsController.buscarComentarios);
 
+router.get("/notifications/:userId",commentsController.criarNotificacoes);
+
+
 /*router.post('/comments', async (req, res) => {
   await commentsController.addComment(req, res);
 });*/

@@ -65,4 +65,18 @@ export class CommentsService {
       console.log(comentarios)
       return comentarios;
     }
+
+    async buscarRespostasParaUsuario(userId: string) {
+      const replies = await CommentModel.find({
+        parentComment: { $exists: true }, 
+      })
+        .populate("user") 
+        .populate("motor")
+        .populate({
+          path: "parentComment",
+          match: { user: userId }, 
+        });
+
+      return replies.filter((r) => r.replyTo !== null);
+    }
 }

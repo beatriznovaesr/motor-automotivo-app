@@ -11,3 +11,4 @@ connectDB().then(() => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
 });
+
