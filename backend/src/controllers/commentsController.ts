@@ -20,14 +20,14 @@ export class CommentsController {
   async addComment(req: Request, res: Response) {
     try {
       console.log("CONTROLLER: addComment", req.body)
-      const { userId, motorId, text } = req.body;
+      const { userName, userId, motorId, text } = req.body;
 
-      if (!text || !userId || !motorId) {
+      if (!userName || !text || !userId || !motorId) {
         res.status(400).json({ error: "Dados inválidos" });
         return;
       }
 
-      const comment = await commentsVM.addComment(userId, motorId, text);
+      const comment = await commentsVM.addComment(userName, userId, motorId, text);
       res.status(201).json(comment);
 
     } catch (error: any) {

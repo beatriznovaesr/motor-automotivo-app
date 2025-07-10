@@ -1,6 +1,7 @@
 import mongoose, { ObjectId } from 'mongoose';
 
 export interface Comment {
+  userName: string,
   userId: string;
   motorId: string;
   text: string;
@@ -9,6 +10,7 @@ export interface Comment {
 }
 
 const CommentSchema = new mongoose.Schema<Comment>({
+  userName: { type: String, required: true },
   userId: { type: String, required: true },
   motorId: { type: String, required: true },
   text: { type: String, required: true },
