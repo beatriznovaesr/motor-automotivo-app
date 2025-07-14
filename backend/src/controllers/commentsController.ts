@@ -8,7 +8,11 @@ export class CommentsController {
   async buscarComentarios(req: Request, res: Response) {
     try {
       console.log("CONTROLLER: buscarComentarios", req.params.motorId)
-        const comments = await commentsVM.buscarComentarios(req.params.motorId);
+
+        const userId = req.query.userId as string;
+        const motorId = req.params.motorId;
+
+        const comments = await commentsVM.buscarComentarios(motorId, userId);
         res.status(200).json(comments || []);
         } catch (error: any) {
         res.status(500).json({ erro: error.message });

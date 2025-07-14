@@ -57,14 +57,28 @@ export class CommentsService {
     }
   }
 
-    async buscarComentarios(motorId: string): Promise<Comment[]> {
+  /*async excluirComentario(commentId: string): Promise<Comment | null> {
+    try {
+      const deleted = await CommentModel.
+    }
+  }*/
+
+    async buscarComentarios(motorId: string, userId: string): Promise<any[]> {
       console.log("Services: buscarComentarios", motorId)
 
       const comentarios = await CommentModel.find({ motorId }).exec();
 
       if (!comentarios) throw new Error("Motor não encontrado");
-      console.log(comentarios)
-      return comentarios;
+
+      const comentariosComPermissao = comentarios.map((comentario) => {
+        const obj = comentario.toObject();
+        return {
+          ...obj,
+          podeEditar: obj.userId.toString() === userId
+        };
+      });
+      console.log(comentariosComPermissao)
+      return comentariosComPermissao;
     }
 
     async buscarRespostasParaUsuario(userId: string) {

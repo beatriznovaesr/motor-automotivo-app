@@ -56,7 +56,7 @@ export default function MotorDetalhado() {
   useEffect(() => {
   const buscarComentarios = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/comments/${motor._id}`);
+      const response = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
       const data = await response.json();
       setComentarios(data);
     } catch (err) {
@@ -87,6 +87,30 @@ export default function MotorDetalhado() {
       }
     };
 
+    const editarComentario = async () => {
+      try {
+        const resposta = await fetch(`http://localhost:5000/api/comments/edit/${comentarioEditando._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: comentarioNovoTexto })
+        });
+
+        if (!resposta.ok) throw new Error("Erro ao editar comentário");
+
+        const response = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
+        const atualizados = await response.json();
+
+        setComentarios(atualizados);
+        setComentarioEditando(null);
+        setComentarioNovoTexto('');
+
+      } catch (err) {
+        console.error("Erro ao editar comentário:", err)
+      }
+    };
+
     const adicionarFavorito = async () =>{
       try {
         console.log("ids no front", idUsuario, motor._id)
@@ -102,6 +126,11 @@ export default function MotorDetalhado() {
       } catch (err) {
           console.error("Erro ao salvar favorito:", err);
       }
+    };
+
+    const excluirComentario = async () => {
+      
+
     };
 
   return (
@@ -152,11 +181,14 @@ export default function MotorDetalhado() {
 
               {com.podeEditar && (
                 <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
-                  <Ionicons name="trash-outline" size={20} color="#ccc" />
+                  <TouchableOpacity>
+                    <Ionicons name="trash-outline" size={20} color="#ccc" />
+                  </TouchableOpacity>
+
                   <TouchableOpacity
                     onPress={() => {
                       setComentarioEditando(com);
-                      setComentarioNovoTexto(com.texto);
+                      setComentarioNovoTexto(com.text);
                     }}
                   >
                     <Ionicons name="pencil-outline" size={20} color="#ccc" />
@@ -346,14 +378,7 @@ export default function MotorDetalhado() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => {
-            const atualizados = comentarios.map(c =>
-              c.id === comentarioEditando.id ? { ...c, texto: comentarioNovoTexto } : c
-            );
-            setComentarios(atualizados);
-            setComentarioEditando(null);
-            setComentarioNovoTexto('');
-          }}
+          onPress={editarComentario}
           style={{
             backgroundColor: '#64a9ff',
             paddingHorizontal: 20,
