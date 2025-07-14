@@ -90,6 +90,23 @@ export default function MotorDetalhado() {
       }
     };
 
+    const adicionarFavorito = async () =>{
+      try {
+        console.log("ids no front", idUsuario, motor._id)
+        await fetch("http://localhost:5000/api/favorites/add", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: idUsuario,
+          motorId: motor._id,
+        })
+      });
+    
+      } catch (err) {
+          console.error("Erro ao salvar favorito:", err);
+      }
+    };
+
   return (
     <View style={{
       flex: 1,
@@ -122,7 +139,7 @@ export default function MotorDetalhado() {
             Descrição: <Text style={{ fontWeight: 'normal' }}>{motor.informacoes}</Text>
           </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={adicionarFavorito}>
             <Text style={{ color: 'salmon', fontSize: 16, marginTop: 8, textDecorationLine: 'underline' }}>Adicionar aos favoritos</Text>
           </TouchableOpacity>
         </View>
@@ -133,8 +150,8 @@ export default function MotorDetalhado() {
 
           {comentarios.map(com => (
             <View key={com.id} style={{ borderBottomWidth: 1, borderColor: '#ccc', paddingVertical: 8 }}>
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{com.usuario}</Text>
-              <Text style={{ color: '#fff' }}>{com.texto}</Text>
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{com.userName}</Text>
+              <Text style={{ color: '#fff' }}>{com.text}</Text>
 
               {com.podeEditar && (
                 <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
@@ -433,4 +450,3 @@ export default function MotorDetalhado() {
     </View>
   );
 }
-

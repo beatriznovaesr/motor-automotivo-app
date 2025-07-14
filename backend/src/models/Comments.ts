@@ -1,6 +1,7 @@
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 
 export interface Comment {
+  userName: string;
   userId: mongoose.Types.ObjectId;
   motorId: mongoose.Types.ObjectId;
   text: string;
@@ -9,6 +10,7 @@ export interface Comment {
 }
 
 const CommentSchema = new mongoose.Schema<Comment>({
+  userName: { type: String, required: true }, // mantido para facilitar exibição
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   motorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Motor', required: true },
   text: { type: String, required: true },

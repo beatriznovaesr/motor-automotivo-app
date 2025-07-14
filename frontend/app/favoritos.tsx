@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -7,20 +7,75 @@ import { Card, Text } from 'react-native-paper';
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 import { ReturnButton } from "../src/components/returnButton";
 import { PageTitle } from "../src/components/pageTitle";
+import { useUser } from "../src/contexts/userContext";
 
 export default function Favoritos() {
   const router = useRouter();
+  const { user } = useUser();
+  const [favoritos, setFavoritos] = useState([]);
+  const [idUsuario, setIdUsuario] = useState("");
+  const userEmail = user?.email;
 
-  const favoritos = [
-    {
-      modelo: "Motor exemplo",
-      desenho: "https://upload.wikimedia.org/wikipedia/commons/5/57/Motor_Exemplo_1.png",
-    },
-    {
-      modelo: "Motor exemplo",
-      desenho: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Motor_Exemplo_2.png",
-    }
-  ];
+  useEffect(() => {
+            async function buscaUsuario() {
+                try {
+                    const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${userEmail}`);
+    
+                    if (!resposta.ok) {
+                        throw new Error("Falha ao buscar dados do usuário");
+                    }
+                    const dados = await resposta.json();
+                    setIdUsuario(dados.id);
+    
+                } catch (error) {
+                    console.error('Falha ao carregar dados do usuário:', error)
+                }
+            }; 
+            buscaUsuario();
+        }, [userEmail]); 
+
+    
+  // useEffect(() => {
+  // const carregarFavoritos = async () => {
+  //   try {
+  //     //if (!idUsuario) return;
+  //     console.log("idusuario:", idUsuario);
+  //     const resposta = await fetch("http://localhost:5000/api/favorites/procurar-favoritos", {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         userId: idUsuario,
+  //       })
+  //     });
+  //     const dados = await resposta.json();
+  //     // console.log(resposta);
+  //     // const dados = await resposta.json();
+  //         console.log(dados);
+  //         setFavoritos(dados);
+  //       } catch (err) {
+  //         console.error("Erro ao carregar favoritos:", err);
+  //       }
+  //     };
+  //     carregarFavoritos();
+  //   });
+
+    useEffect(() => {
+      const carregarFavoritos = async () => {
+        console.log(idUsuario)
+        try {
+          console.log("log dentro do try",idUsuario)
+          const response = await fetch(`http://localhost:5000/api/favorites/${idUsuario}`);
+          const data = await response.json();
+          setFavoritos(data);
+          console.log(data);
+        } catch (err) {
+          console.error("Erro ao buscar favoritos:", err);
+        }
+      };
+      carregarFavoritos();
+    }, []); 
+
+    
 
   return (
     <View style={{
@@ -29,7 +84,6 @@ export default function Favoritos() {
       width: '100%',
       gap: 6,
     }}>
-      {/* Header */}
       <ScrollView contentContainerStyle={{
         flexGrow: 1,
         width: '100%',
@@ -54,32 +108,36 @@ export default function Favoritos() {
           </Link>
         </View>
 
-        {/* Lista de favoritos */}
-        {favoritos.map((motor, index) => (
-          <Card
-            key={index}
-            style={{
-              width: '85%',
-              backgroundColor: '#ffffff',
-              borderRadius: 12,
-              overflow: 'hidden'
-            }}
-            onPress={() =>
-              router.push({
-                pathname: 'desenhoIndividualForum',
-                params: { motor: JSON.stringify(motor) }
-              })
-            }>
-            <Card.Content>
-              <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>{motor.modelo}</Text>
-            </Card.Content>
-            <Card.Cover source={{ uri: motor.desenho }} resizeMode="contain" />
-          </Card>
-        ))}
+        {/* Lista dinâmica de favoritos */}
+        {favoritos.length === 0 ? (
+          <Text style={{ color: 'white', marginTop: 20 }}>Nenhum favorito encontrado.</Text>
+        ) : (
+          favoritos.map((motor, index) => (
+            <Card
+              key={index}
+              style={{
+                width: '85%',
+                backgroundColor: '#ffffff',
+                borderRadius: 12,
+                overflow: 'hidden'
+              }}
+              onPress={() =>
+                router.push({
+                  pathname: 'desenhoIndividualForum',
+                  params: { motor: JSON.stringify(motor) }
+                })
+              }>
+              <Card.Content>
+                <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>{motor.modelo || 'Motor'}</Text>
+              </Card.Content>
+              <Card.Cover source={{ uri: motor.desenho }} resizeMode="contain" />
+            </Card>
+          ))
+        )}
       </ScrollView>
 
-      {/* Footer */}
       <NavigationMenu />
     </View>
   );
 }
+

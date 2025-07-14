@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 import CommentModel, { Comment } from "../models/Comments";
 
 export class CommentsService {
-  async addComment(userId: string, motorId: string, text: string): Promise<Comment> {
+  async addComment(userName: string, userId: string, motorId: string, text: string): Promise<Comment> {
     try {
-      console.log("CHEGANDO NO COMMENT SERVICE", userId, motorId, text)
+      console.log("CHEGANDO NO COMMENT SERVICE",userName, userId, motorId, text)
       const newComment = new CommentModel({
+        userName,
         userId,
         motorId,
         text,
