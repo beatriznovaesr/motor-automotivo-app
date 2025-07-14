@@ -14,12 +14,12 @@ export const NotificationBell = () => {
       try {
         if (!user?.email) return;
 
-        const userRes = await fetch(`http://localhost:5000/users/usuarios/${user.email}`);
+        const userRes = await fetch(`http://localhost:5000/api/users/usuarios/${user.email}`);
         const userData = await userRes.json();
 
         if (!userData?._id) return;
 
-        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notificacoes/${userData._id}`);
+        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notifications/${userData._id}`);
         const notificationsData = await notificationsRes.json();
 
         setHasNew(notificationsData.some((n: any) => !n.read));
