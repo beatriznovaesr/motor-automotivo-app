@@ -19,7 +19,7 @@ const replyComment: React.FC<Props> = ({ visible, message, onCancel, onSave }) =
   const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
-    if (visible) setReplyText(""); // limpa o campo ao abrir
+    if (visible) setReplyText("");
   }, [visible]);
 
   return (

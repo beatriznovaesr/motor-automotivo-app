@@ -182,24 +182,40 @@ export default function MotorDetalhado() {
           ))}
         </View>
 
-        <TouchableOpacity style={{
-          backgroundColor: '#64a9ff',
-          marginTop: 24,
-          marginHorizontal: 40,
-          borderRadius: 10,
-          padding: 12,
-          alignItems: 'center',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 4,
-          elevation: 4,
-          marginBottom:60
-        }}
-          onPress={() => setAddCommentModal(true)}>
-          <AddComment visible={addCommentModal} onCancel={cancelarComentario} onSave={adicionarComentario}></AddComment>
-          <Text style={{ color: '#111', fontWeight: 'bold', fontSize: 16 }}>Adicionar comentário</Text>
-        </TouchableOpacity>
+        <View style={{
+  marginTop: 24,
+  marginHorizontal: 40,
+  borderRadius: 10,
+  paddingBottom: 60
+}}>
+  <AddComment
+    visible={addCommentModal}
+    onCancel={cancelarComentario}
+    onSave={async (novoTexto) => {
+      await adicionarComentario(novoTexto);
+      setAddCommentModal(false); // fecha o modal ao salvar
+    }}
+  />
+  <TouchableOpacity
+    style={{
+      backgroundColor: '#64a9ff',
+      borderRadius: 10,
+      padding: 12,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 4
+    }}
+    onPress={() => setAddCommentModal(true)}
+  >
+    <Text style={{ color: '#111', fontWeight: 'bold', fontSize: 16 }}>
+      Adicionar comentário
+    </Text>
+  </TouchableOpacity>
+</View>
+
 
       </ScrollView>
 

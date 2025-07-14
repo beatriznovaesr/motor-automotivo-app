@@ -6,11 +6,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 import replyComment from "../src/components/replyComment/replyComment";
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell"; 
 
 import {
   useFonts,
@@ -29,10 +28,8 @@ interface Notification {
 
 const ReplyComment = replyComment;
 
-const Notifications: React.FC = () => {
+export default function Notificacao() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [hasNew, setHasNew] = useState(false);
-
   const { user } = useUser();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
@@ -47,7 +44,6 @@ const Notifications: React.FC = () => {
       try {
         if (!user?.email) return;
 
-        console.log("Buscando usuário com email:", user.email);
         const userRes = await fetch(`http://localhost:5000/users/email/${user.email}`);
         const userData = await userRes.json();
 
@@ -56,11 +52,10 @@ const Notifications: React.FC = () => {
           return;
         }
 
-        const notificationsRes = await fetch(`http://localhost:5000/api/notifications/${userData._id}`);
+        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notificacoes/${userData._id}`);
         const notificationsData = await notificationsRes.json();
 
         setNotifications(notificationsData);
-        setHasNew(notificationsData.some((n: Notification) => !n.read));
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
       }
@@ -77,11 +72,7 @@ const Notifications: React.FC = () => {
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Notificações</Text>
-            <MaterialCommunityIcons
-              name="bell-ring"
-              size={32}
-              color={hasNew ? "#facc15" : "#fff"}
-            />
+            <NotificationBell /> 
           </View>
 
           <View style={styles.notificationList}>
@@ -89,7 +80,7 @@ const Notifications: React.FC = () => {
               <Text style={styles.emptyText}>Nenhuma notificação no momento.</Text>
             ) : (
               <FlatList
-                scrollEnabled={false} // necessário com ScrollView pai
+                scrollEnabled={false}
                 data={notifications}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (
@@ -111,9 +102,18 @@ const Notifications: React.FC = () => {
             visible={modalVisible}
             message={selectedNotification?.message || ""}
             onCancel={() => setModalVisible(false)}
-            onSave={(replyText) => {
-              console.log("Resposta enviada:", replyText);
-              setModalVisible(false);
+            onSave={async (replyText) => {
+              try {
+                const res = await fetch(`http://localhost:5000/api/comments/reply/${selectedNotification?._id}`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ userId: user?._id, text: replyText })
+                });
+                if (!res.ok) throw new Error("Erro ao salvar resposta");
+                setModalVisible(false);
+              } catch (e) {
+                console.error(e);
+              }
             }}
           />
         </View>
@@ -145,27 +145,26 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 50,
     backgroundColor: "#155fbf",
     width: "100%",
-    position: "relative",
-  },
+    },
   headerText: {
     color: "#ffffff",
     fontSize: 22,
     fontFamily: "RobotoSerif_700Bold",
-    position: "absolute",
-    left: 0,
-    right: 0,
     textAlign: "center",
+    flex: 1,
+    marginLeft: -70, 
+    marginTop: 26,
     textShadowColor: "#000000aa",
     textShadowOffset: { width: 1, height: 2 },
     textShadowRadius: 4,
-    zIndex: -1, 
-  },
+    },
+
   notificationList: {
     width: "100%",
     backgroundColor: "#ffffff",
@@ -188,5 +187,3 @@ const styles = StyleSheet.create({
     fontFamily: "RobotoSerif_400Regular",
   },
 });
-
-export default Notifications;

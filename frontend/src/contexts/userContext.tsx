@@ -5,7 +5,9 @@ import { useSortedScreens } from 'expo-router/build/useScreens';
 import React, { createContext, useContext, ReactNode, useState } from 'react';
 
 type User = {
-    email: string
+    _id: string;
+    email: string;
+    nome: string;
 };
 
 type UserContextType = {
@@ -32,3 +34,5 @@ export const useUser = () => {
     }
     return context;
 };
+
+

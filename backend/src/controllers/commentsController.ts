@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import { CommentsService } from "../services/commentsService";
-import { NotificationService } from "../services/notificationsService";
 
 const commentsVM = new CommentsService();
-const notificationsVM = new NotificationService();
 
 export class CommentsController {
 
@@ -16,6 +14,26 @@ export class CommentsController {
         res.status(500).json({ erro: error.message });
         }
     }
+
+  async criarNotificacoes(req: Request, res: Response) {
+    try {
+      const userId = req.params.userId;
+      const replies = await commentsVM.buscarRespostasParaUsuario(userId);
+
+      const notificacoes = replies.map((reply) => ({
+        _id: reply._id,
+        message: `Usuário ${reply.userId as any} respondeu seu comentário em ${reply.motorId as any}`,
+        createdAt: reply.createdAt,
+        read: false,
+      }));
+
+      res.status(200).json(notificacoes);
+
+    } catch (error: any) {
+      console.error("Erro ao buscar notificações:", error);
+      res.status(500).json({ erro: error.message });
+    }
+  }
 
   async addComment(req: Request, res: Response) {
     try {
@@ -36,28 +54,24 @@ export class CommentsController {
     }
   }
 
-  async replyToComment(req: Request, res: Response) {
-    try {
-      const parentId = req.params.id;
-      const { userId, text } = req.body;
+ async replyToComment(req: Request, res: Response) {
+  try {
+    const parentId = req.params.id;
+    const { userId, text } = req.body;
 
-      const reply = await commentsVM.replyToComment(parentId, userId, text);
-      if (!reply) {
-        return res.status(404).json({ error: "Comentário original não encontrado" });
-      }
-
-      await notificationsVM.createNotification(
-        userId,
-        `Usuário ${userId} respondeu seu comentário em Motor exemplo ${reply.motorId}`
-      );
-
-      return res.status(201).json(reply);
-
-    } catch (error: any) {
-      console.error("Erro ao responder comentário:", error);
-      return res.status(500).json({ error: error.message });
+    const reply = await commentsVM.replyToComment(parentId, userId, text);
+    if (!reply) {
+      return res.status(404).json({ error: "Comentário original não encontrado" });
     }
+
+    return res.status(201).json(reply);
+
+  } catch (error: any) {
+    console.error("Erro ao responder comentário:", error);
+    return res.status(500).json({ error: error.message });
   }
+}
+
 
   async editComment(req: Request, res: Response) {
     try {
