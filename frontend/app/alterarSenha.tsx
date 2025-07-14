@@ -7,7 +7,8 @@ import { Button } from '../src/components/button';
 import { PageTitle } from "../src/components/pageTitle";
 import { ReturnButton } from "../src/components/returnButton";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
-import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
+import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal"
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell";
 
 export default function TelaAlterarSenha() {
     const { user } = useUser();
@@ -60,7 +61,7 @@ export default function TelaAlterarSenha() {
         } catch (error) {
             console.error(error);
             setModalVisible(true);
-            //Alert.alert("Erro ao atualizar senha:", error.message);
+            Alert.alert("Erro ao atualizar senha:", error.message);
         }
     };
 
@@ -80,9 +81,25 @@ export default function TelaAlterarSenha() {
                 paddingBottom: 80,
                 paddingTop: 100
             }}>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 38, width: '100%', paddingHorizontal: 40, marginBottom: 30, position: 'absolute', top: 180,  left: 0, right: 0}}>
+            <View style={{
+                flexDirection: 'row', 
+                justifyContent: 'flex-start', 
+                gap: 30, 
+                width: '100%', 
+                paddingHorizontal: 35, 
+                marginBottom: 30, 
+                position: 'absolute', 
+                top: 140,  
+                left: 0, 
+                right: 0}}>
                 <ReturnButton></ReturnButton>
                 <PageTitle text='Alterar senha'></PageTitle>
+                <View style={{
+                    marginTop: 10,
+                    marginLeft: 20
+                }}>
+                    <NotificationBell/>
+                </View>
             </View>
             <Input 
                 title='Senha atual: ' 

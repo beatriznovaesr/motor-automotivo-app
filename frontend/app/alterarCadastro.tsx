@@ -11,6 +11,7 @@ import { NotificationSwitch } from "../src/components/notificationSwitch";
 import { ReturnButton } from "../src/components/returnButton";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell";
 
 export default function AlterarCadastro() {
     const router = useRouter();
@@ -107,9 +108,25 @@ export default function AlterarCadastro() {
             paddingBottom: 80,
             paddingTop: 100
         }}>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start', gap: 60, width: '100%', paddingHorizontal: 40, marginBottom: 30, position: 'absolute', top: 180, left: 0, right: 0}}>
+            <View style={{
+                flexDirection: 'row', 
+                justifyContent: 'flex-start', 
+                gap: 60, 
+                width: '100%', 
+                paddingHorizontal: 30, 
+                marginBottom: 30, 
+                position: 'absolute', 
+                top: 140, 
+                left: 0, 
+                right: 0}}>
                 <ReturnButton></ReturnButton>
                 <PageTitle text='Meu perfil'></PageTitle>
+                <View style={{
+                    marginTop: 10,
+                    marginLeft: 10
+                }}>
+                    <NotificationBell/>
+                </View>
             </View>
             <Input title='Nome de usuário' value={nome} onChangeText={setNome}></Input>
             <Input title='E-mail' value={email} onChangeText={setEmail}></Input>

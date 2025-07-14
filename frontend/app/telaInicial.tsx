@@ -79,7 +79,13 @@ export default function TelaInicial() {
         paddingBottom: 80
       }}
     >
-      <NotificationBell /> {/* ✅ Sininho no canto superior direito */}
+      <View style={{
+        flex: 0.2,
+        marginLeft: 300,
+        marginTop: -100
+      }}>
+        <NotificationBell/> 
+      </View>
 
       {jaPesquisou && nenhumResultado && (
         <Text style={{
