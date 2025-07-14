@@ -3,12 +3,11 @@ import { View, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Card, Text } from 'react-native-paper';
-
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 import { ReturnButton } from "../src/components/returnButton";
 import { PageTitle } from "../src/components/pageTitle";
 import { useUser } from "../src/contexts/userContext";
-
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell";
 export default function Favoritos() {
   const router = useRouter();
   const { user } = useUser();
@@ -19,7 +18,7 @@ export default function Favoritos() {
   useEffect(() => {
             async function buscaUsuario() {
                 try {
-                    const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${userEmail}`);
+                    const resposta = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${userEmail}`);
     
                     if (!resposta.ok) {
                         throw new Error("Falha ao buscar dados do usuário");
@@ -34,38 +33,13 @@ export default function Favoritos() {
             buscaUsuario();
         }, [userEmail]); 
 
-    
-  // useEffect(() => {
-  // const carregarFavoritos = async () => {
-  //   try {
-  //     //if (!idUsuario) return;
-  //     console.log("idusuario:", idUsuario);
-  //     const resposta = await fetch("http://localhost:5000/api/favorites/procurar-favoritos", {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         userId: idUsuario,
-  //       })
-  //     });
-  //     const dados = await resposta.json();
-  //     // console.log(resposta);
-  //     // const dados = await resposta.json();
-  //         console.log(dados);
-  //         setFavoritos(dados);
-  //       } catch (err) {
-  //         console.error("Erro ao carregar favoritos:", err);
-  //       }
-  //     };
-  //     carregarFavoritos();
-  //   });
-
     useEffect(() => {
       const carregarFavoritos = async () => {
         if (!user?._id) return;
 
         try {
           console.log("log dentro do try", user._id)
-          const response = await fetch(`http://localhost:5000/api/favorites/${user._id}`);
+          const response = await fetch(`http://192.168.0.117:5000/api/favorites/${user._id}`);
           const data = await response.json();
           setFavoritos(data);
           console.log(data);
@@ -100,13 +74,11 @@ export default function Favoritos() {
           alignItems: 'center',
           width: '100%',
           paddingHorizontal: 16,
-          marginTop: 10
+          marginTop: 30
         }}>
           <ReturnButton />
           <PageTitle text='Favoritos' />
-          <Link href='/'>
-            <MaterialCommunityIcons name="bell-ring" size={40} color="white" />
-          </Link>
+          <NotificationBell/>
         </View>
 
         {/* Lista dinâmica de favoritos */}

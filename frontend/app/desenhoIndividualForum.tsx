@@ -7,7 +7,7 @@ import { ReturnButton } from "../src/components/returnButton";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
 import { PageTitle } from "../src/components/pageTitle";
 import { useUser } from "../src/contexts/userContext";
-
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell";
 //componente de adicionar comentário
 import AddComment from "../src/components/addComment/addComment";
 import { style } from "../src/components/button/styles";
@@ -38,7 +38,7 @@ export default function MotorDetalhado() {
   useEffect(() => {
           async function buscaUsuario() {
               try {
-                  const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${userEmail}`);
+                  const resposta = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${userEmail}`);
   
                   if (!resposta.ok) {
                       throw new Error("Falha ao buscar dados do usuário");
@@ -57,7 +57,7 @@ export default function MotorDetalhado() {
   useEffect(() => {
   const buscarComentarios = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
+      const response = await fetch(`http://192.168.0.117:5000/api/comments/${motor._id}?userId=${user._id}`);
       const data = await response.json();
       setComentarios(data);
     } catch (err) {
@@ -70,7 +70,7 @@ export default function MotorDetalhado() {
     const adicionarComentario = async (novoTexto: string) => {
       //console.log(novoComentario)
       try {
-        await fetch(`http://localhost:5000/api/comments/add`, {
+        await fetch(`http://192.168.0.117:5000/api/comments/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -80,7 +80,7 @@ export default function MotorDetalhado() {
           text: novoTexto
         })
       });
-        const resposta = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
+        const resposta = await fetch(`http://192.168.0.117:5000/api/comments/${motor._id}?userId=${user._id}`);
 
         const atualizados = await resposta.json();
         setComentarios(atualizados);
@@ -92,7 +92,7 @@ export default function MotorDetalhado() {
 
     const editarComentario = async () => {
       try {
-        const resposta = await fetch(`http://localhost:5000/api/comments/edit/${comentarioEditando._id}`, {
+        const resposta = await fetch(`http://192.168.0.117:5000/api/comments/edit/${comentarioEditando._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export default function MotorDetalhado() {
 
         if (!resposta.ok) throw new Error("Erro ao editar comentário");
 
-        const response = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
+        const response = await fetch(`http://192.168.0.117:5000/api/comments/${motor._id}?userId=${user._id}`);
         const atualizados = await response.json();
 
         setComentarios(atualizados);
@@ -117,7 +117,7 @@ export default function MotorDetalhado() {
     const adicionarFavorito = async () =>{
       try {
         console.log("ids no front", idUsuario, motor._id)
-        await fetch("http://localhost:5000/api/favorites/add", {
+        await fetch("http://192.168.0.117:5000/api/favorites/add", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -133,7 +133,7 @@ export default function MotorDetalhado() {
 
     const deletarComentario = async (comentarioId: string) => {
       try {
-        const resposta = await fetch(`http://localhost:5000/api/comments/delete/${comentarioId}`, {
+        const resposta = await fetch(`http://192.168.0.117:5000/api/comments/delete/${comentarioId}`, {
           method: 'DELETE',
         });
 
@@ -157,8 +157,8 @@ export default function MotorDetalhado() {
         {/* Topo */}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 }}>
           <ReturnButton />
-          <PageTitle text='Motor exemplo' />
-          <MaterialCommunityIcons name="bell-ring" size={40} color="white" />
+          <PageTitle text={motor.modelo} />
+          <NotificationBell/>
         </View>
 
         <Image
@@ -194,20 +194,15 @@ export default function MotorDetalhado() {
 
               {com.podeEditar && (
                 <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
-                  {/*<TouchableOpacity onPress={() => {
+                  <TouchableOpacity onPress={() => {
                     Alert.alert("Excluir comentário", "Deseja excluir este comentário?",
                       [
                         { text: "Cancelar", style: "cancel" },
                         { text: "Excluir", onPress: () => deletarComentario(com._id), style: "destructive" }
                       ]
                     );
-                  }}>}
+                  }}>
                     <Ionicons name="trash-outline" size={20} color="#ccc" />
-                  </TouchableOpacity>*/}
-
-                  <TouchableOpacity
-                  onPress={() => deletarComentario(com._id)}>
-                  <Ionicons name="trash-outline" size={20} color="#ccc" />
                   </TouchableOpacity>
 
                   <TouchableOpacity

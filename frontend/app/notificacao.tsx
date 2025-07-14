@@ -44,7 +44,7 @@ export default function Notificacao() {
       try {
         if (!user?.email) return;
 
-        const userRes = await fetch(`http://localhost:5000/api/users/usuarios/${user.email}`);
+        const userRes = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${user.email}`);
         const userData = await userRes.json();
 
         if (!userData?._id) {
@@ -52,7 +52,7 @@ export default function Notificacao() {
           return;
         }
 
-        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notifications/${userData._id}`);
+        const notificationsRes = await fetch(`http://192.168.0.117:5000/api/comments/notifications/${userData._id}`);
         const notificationsData = await notificationsRes.json();
 
         setNotifications(notificationsData);
@@ -104,7 +104,7 @@ export default function Notificacao() {
             onCancel={() => setModalVisible(false)}
             onSave={async (replyText) => {
               try {
-                const res = await fetch(`http://localhost:5000/api/comments/reply/${selectedNotification?._id}`, {
+                const res = await fetch(`http://192.168.0.117:5000/api/comments/reply/${selectedNotification?._id}`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ userId: user?._id, text: replyText })

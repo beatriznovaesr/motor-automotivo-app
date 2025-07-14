@@ -38,7 +38,7 @@ export default function TelaAlterarSenha() {
         }
 
         try {
-            const resposta = await fetch(`http://localhost:5000/api/users/usuarios/alterar-senha/${encodeURIComponent(userEmail)}`, {
+            const resposta = await fetch(`http://192.168.0.117:5000/api/users/usuarios/alterar-senha/${encodeURIComponent(userEmail)}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

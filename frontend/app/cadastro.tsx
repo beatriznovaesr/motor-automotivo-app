@@ -7,6 +7,7 @@ import { Button } from "../src/components/button";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link, useRouter } from 'expo-router';
 import ConnectionErrorModal from "../src/components/connectionError/ConnectionErrorModal";
+import { ReturnButton } from "../src/components/returnButton";
 
 export default function Cadastro(){
 
@@ -55,7 +56,7 @@ export default function Cadastro(){
     }
 
     try {
-      const resposta = await fetch("http://10.0.2.2:5000/api/users/cadastro", {
+      const resposta = await fetch("http://192.168.0.117:5000/api/users/cadastro", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -78,7 +79,6 @@ export default function Cadastro(){
     } catch (error) {
       console.error(error);
       setModalVisible(true);
-      //Alert.alert("Erro", "Erro de conexão com a internet! Tente novamente mais tarde.");
     }
   };
 
@@ -86,46 +86,50 @@ export default function Cadastro(){
     setModalVisible(false);
   };
 
-  return(
+  return (
+  <View
+    style={{
+      flex: 1,
+      backgroundColor: '#155fbf',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      gap: 6,
+      paddingBottom: 80,
+      paddingTop: 100
+    }}
+  >
     <View
       style={{
-        flex: 1,
-        backgroundColor: '#155fbf',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%'
-      }} 
-    >
-      
-      <TouchableOpacity onPress={() => router.push('/telaInicial')} 
-      style={{ flexDirection: 'row', alignItems: 'center', marginTop:-100, marginRight:290 }}>
-        <Ionicons name="chevron-back-circle-outline" size={30} color="white" />
-      </TouchableOpacity>
-
-       <View
-        style={{
-        backgroundColor: '#155fbf',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        gap: 60,
         width: '100%',
-        marginTop:50
+        paddingHorizontal: 30,
+        marginBottom: 30,
+        position: 'absolute',
+        top: 140,
+        left: 0,
+        right: 0
       }}
-        >
-      <PageTitle text='Cadastro'></PageTitle>
-      <Input title="Nome de usuário" value={nome} onChangeText={setNome}></Input>
-      <Input title="E-mail" value={email} onChangeText={setEmail}></Input>
-      <InputDeData value={dataNascimento} onChange={setDataNascimento}></InputDeData>
-      <Input title="Senha" value={senha} onChangeText={setSenha} secureTextEntry={true} showVisibilityToggle></Input>
-      <Input title="Confirme sua senha" value={confirmarSenha} onChangeText={setConfirmarSenha} secureTextEntry={true} showVisibilityToggle></Input>
-      <Button text='Cadastrar' onPress={handleCadastro}></Button>
-      </View>
-
-      <ConnectionErrorModal
-        visible={isModalVisible}
-        onClose={closeModal}
-      />
+    >
+      <ReturnButton />
+      <PageTitle text='Cadastro' />
     </View>
-  
-  )
+
+    <Input title="Nome de usuário" value={nome} onChangeText={setNome} />
+    <Input title="E-mail" value={email} onChangeText={setEmail} />
+    <InputDeData value={dataNascimento} onChange={setDataNascimento} />
+    <Input title="Senha" value={senha} onChangeText={setSenha} secureTextEntry showVisibilityToggle />
+    <Input title="Confirme sua senha" value={confirmarSenha} onChangeText={setConfirmarSenha} secureTextEntry showVisibilityToggle />
+    <Button text='Cadastrar' onPress={handleCadastro} />
+
+    <ConnectionErrorModal
+      visible={isModalVisible}
+      onClose={closeModal}
+    />
+  </View>
+);
+
 }
 

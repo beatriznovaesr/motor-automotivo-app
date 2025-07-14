@@ -34,7 +34,7 @@ export default function TelaInicial() {
     setNenhumResultado(false);
 
     try {
-      const resposta = await fetch("http://localhost:5000/api/motors/procurar-motor", {
+      const resposta = await fetch("http://192.168.0.117:5000/api/motors/procurar-motor", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export default function TelaInicial() {
         if (json.length > 0) {
           router.push({
             pathname: 'resultadoPesquisa',
-            params: { motores: JSON.stringify(json) }
+            params: { motores: JSON.stringify(json), pesquisa: palavraPesquisada }
           });
         } else {
           setNenhumResultado(true);
