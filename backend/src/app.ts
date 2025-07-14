@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes';
 import motorRoutes from './routes/motorRoutes';
-import notificationRoutes from  './routes/notificationsRoutes';
+import notificationRoutes from  './routes/notificationRoutes';
 import commentsRoutes from  './routes/commentsRoutes';
 
 const app = express();

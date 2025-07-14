@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { NavigationMenu } from "../navigationMenu/navigationMenu";
-import replyComment from "../replyComment/replyComment";
+import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
+import replyComment from "../src/components/replyComment/replyComment";
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell"; 
 
 import {
   useFonts,
@@ -17,7 +17,7 @@ import {
   RobotoSerif_700Bold,
 } from "@expo-google-fonts/roboto-serif";
 
-import { useUser } from "../../contexts/userContext";
+import { useUser } from "../src/contexts/userContext";
 
 interface Notification {
   _id: string;
@@ -28,10 +28,8 @@ interface Notification {
 
 const ReplyComment = replyComment;
 
-export const NotificationComponent: React.FC = () => {
+export default function Notificacao() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [hasNew, setHasNew] = useState(false);
-
   const { user } = useUser();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
@@ -58,7 +56,6 @@ export const NotificationComponent: React.FC = () => {
         const notificationsData = await notificationsRes.json();
 
         setNotifications(notificationsData);
-        setHasNew(notificationsData.some((n: Notification) => !n.read));
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
       }
@@ -75,11 +72,7 @@ export const NotificationComponent: React.FC = () => {
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Notificações</Text>
-            <MaterialCommunityIcons
-              name="bell-ring"
-              size={32}
-              color={hasNew ? "#facc15" : "#fff"}
-            />
+            <NotificationBell /> 
           </View>
 
           <View style={styles.notificationList}>
@@ -152,27 +145,26 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 50,
     backgroundColor: "#155fbf",
     width: "100%",
-    position: "relative",
-  },
+    },
   headerText: {
     color: "#ffffff",
     fontSize: 22,
     fontFamily: "RobotoSerif_700Bold",
-    position: "absolute",
-    left: 0,
-    right: 0,
     textAlign: "center",
+    flex: 1,
+    marginLeft: -70, 
+    marginTop: 26,
     textShadowColor: "#000000aa",
     textShadowOffset: { width: 1, height: 2 },
     textShadowRadius: 4,
-    zIndex: -1,
-  },
+    },
+
   notificationList: {
     width: "100%",
     backgroundColor: "#ffffff",

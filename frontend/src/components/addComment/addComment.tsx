@@ -42,7 +42,10 @@ const AddComment: React.FC<Props> = ({ visible, onCancel, onSave }) => {
 
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={() => onSave(newText)}
+              onPress={async () => {
+                await onSave(newText);
+                onCancel();
+              }}
             >
               <Text style={styles.saveText}>Salvar</Text>
             </TouchableOpacity>
