@@ -61,7 +61,6 @@ export default function Favoritos() {
 
     useEffect(() => {
       const carregarFavoritos = async () => {
-        console.log("frontend",user?._id);
         if (!user?._id) return;
 
         try {

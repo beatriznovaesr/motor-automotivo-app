@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import FavoriteModel, { Favorite } from "../models/Favorites";
-import Motor from "../models/Motor";
+import MotorModel, {Motor} from "../models/Motor";
 
 export class FavoriteService {
     async addFavorite(userId: string, motorId: string){
@@ -19,14 +19,17 @@ export class FavoriteService {
             }
     }
 
-    async findFavorites(userId: string): Promise<Favorite[]> {
+    async findFavorites(userId: string): Promise<Motor[]> {
         console.log("FAV SERVICES: findFavorites", userId)
           try{
               const favorites = await FavoriteModel.find({ userId: userId }).exec();
-              //const favorites = [{motorId: "djso", userId: "nddnsk"}]
-              console.log(favorites)
+              console.log("Favoritos encontrados:", favorites);
              
-              return favorites;
+              const motorsIds = favorites.map(f => f.motorId);
+
+              const motors = await MotorModel.find({ _id: { $in: motorsIds }}).exec();
+
+              return motors;
 
           } catch (error) {
             console.error('Erro ao buscar favoritos', error);
