@@ -76,7 +76,6 @@ export class CommentsController {
   }
 }
 
-
   async editComment(req: Request, res: Response) {
     try {
       const commentId = req.params.id;
@@ -91,6 +90,23 @@ export class CommentsController {
 
     } catch (error: any) {
       console.error("Erro ao editar comentário:", error);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  async deletarComentario(req: Request, res: Response) {
+    try {
+      const commentId = req.params.id;
+
+      const deleted = await commentsVM.deletarComentario(commentId);
+
+      if (!deleted) {
+        return res.status(404).json({ error: "Comentário não encontrado" });
+      }
+      return res.status(200).json(deleted);
+
+    } catch (error: any) {
+      console.error("Erro ao deletar comentário:", error);
       return res.status(500).json({ error: error.message });
     }
   }

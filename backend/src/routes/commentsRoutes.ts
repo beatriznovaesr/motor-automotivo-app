@@ -17,5 +17,8 @@ router.put('/edit/:id', async (req, res) => {
   await commentsController.editComment(req, res);
 });
 
+router.delete('/delete/:id', async (req, res) => {
+  await commentsController.deletarComentario(req, res);
+});
 
 export default router;

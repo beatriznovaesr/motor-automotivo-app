@@ -57,11 +57,17 @@ export class CommentsService {
     }
   }
 
-  /*async excluirComentario(commentId: string): Promise<Comment | null> {
+  async deletarComentario(commentId: string): Promise<Comment | null> {
     try {
-      const deleted = await CommentModel.
+      const deleted = await CommentModel.findByIdAndDelete(commentId);
+
+      return deleted;
+
+    } catch (error) {
+      console.error("Erro ao deletar comentário:", error);
+      throw new Error("Erro ao deletar comentário");
     }
-  }*/
+  }
 
     async buscarComentarios(motorId: string, userId: string): Promise<any[]> {
       console.log("Services: buscarComentarios", motorId)

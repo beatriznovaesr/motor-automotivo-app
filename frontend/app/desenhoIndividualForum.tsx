@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { Link, useLocalSearchParams } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -10,6 +10,7 @@ import { useUser } from "../src/contexts/userContext";
 
 //componente de adicionar comentário
 import AddComment from "../src/components/addComment/addComment";
+import { style } from "../src/components/button/styles";
 
 export default function MotorDetalhado() {
   const { user, setUser } = useUser();
@@ -64,7 +65,7 @@ export default function MotorDetalhado() {
     }
   };
   buscarComentarios();
-}, []); 
+}, [user]); 
 
     const adicionarComentario = async (novoTexto: string) => {
       //console.log(novoComentario)
@@ -79,8 +80,10 @@ export default function MotorDetalhado() {
           text: novoTexto
         })
       });
-        const resposta = await fetch(`http://localhost:5000/api/comments/${motor._id}`);
+        const resposta = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
+
         const atualizados = await resposta.json();
+        setComentarios(atualizados);
 
       } catch (err) {
           console.error("Erro ao salvar comentário:", err);
@@ -128,9 +131,19 @@ export default function MotorDetalhado() {
       }
     };
 
-    const excluirComentario = async () => {
-      
+    const deletarComentario = async (comentarioId: string) => {
+      try {
+        const resposta = await fetch(`http://localhost:5000/api/comments/delete/${comentarioId}`, {
+          method: 'DELETE',
+        });
 
+        if (!resposta.ok) throw new Error("Erro ao deletar comentário");
+
+        setComentarios(prev => prev.filter(c => c._id !== comentarioId));
+
+      } catch (err) {
+        console.error("Erro ao deletar comentário:", err);
+      }
     };
 
   return (
@@ -181,8 +194,20 @@ export default function MotorDetalhado() {
 
               {com.podeEditar && (
                 <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
-                  <TouchableOpacity>
+                  {/*<TouchableOpacity onPress={() => {
+                    Alert.alert("Excluir comentário", "Deseja excluir este comentário?",
+                      [
+                        { text: "Cancelar", style: "cancel" },
+                        { text: "Excluir", onPress: () => deletarComentario(com._id), style: "destructive" }
+                      ]
+                    );
+                  }}>}
                     <Ionicons name="trash-outline" size={20} color="#ccc" />
+                  </TouchableOpacity>*/}
+
+                  <TouchableOpacity
+                  onPress={() => deletarComentario(com._id)}>
+                  <Ionicons name="trash-outline" size={20} color="#ccc" />
                   </TouchableOpacity>
 
                   <TouchableOpacity
