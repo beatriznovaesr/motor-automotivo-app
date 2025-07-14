@@ -4,28 +4,17 @@ import { FavoriteService } from "../services/FavoritesService";
 const favoritesVM = new FavoriteService();
 
 export class FavoritesController {
-  
-  // async findFavorites(req: Request, res: Response) {
-  //   console.log("CONTROLLER: buscarFavs");
-  //   const { userId } = req.body;
-  //   try {
-  //     console.log("CONTROLLER: buscarFavs", userId);
-  //     const favorites = await favoritesVM.findFavorites(userId);
-  //     res.status(200).json(favorites);
-  //   } catch (error: any) {
-  //     console.log("CONTROLLER: buscarFavs", userId);
-  //     console.error("Erro ao buscar favoritos:", error);
-  //     res.status(500).json({ erro: error.message });
-  //   }
-  // }
 
   async findFavorites(req: Request, res: Response) {
       try {
-        console.log("CONTROLLER: buscarComentarios", req.params.userId)
+          console.log("CONTROLLER: findFavorites", req.params.userId)
+
           const favorites = await favoritesVM.findFavorites(req.params.userId);
-          res.status(200).json(favorites || ["algo vazio"]);
+          res.status(200).json(favorites);
+
           } catch (error: any) {
-          res.status(500).json({ erro: error.message });
+            console.error("Erro no controller de favoritos:", error);
+            res.status(500).json({ erro: error.message });
           }
       }
 

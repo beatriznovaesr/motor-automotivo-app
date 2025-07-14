@@ -19,20 +19,22 @@ export class FavoriteService {
             }
     }
 
-    // async findFavorites(userId: string): Promise<Favorite[]> {
-    //       console.log("Services: findFavorites", userId)
-    //       try{
-    //           const favorites = await FavoriteModel.find({ userId: userId }).exec();
-    //           //const favorites = [{motorId: "djso", userId: "nddnsk"}]
-    //           console.log(favorites)
-             
-    //           return favorites;
-    //       }
-    //       catch{
-    //         throw new Error("fav não encontrado");
-    //       }
-    //     }
     async findFavorites(userId: string): Promise<Favorite[]> {
+        console.log("FAV SERVICES: findFavorites", userId)
+          try{
+              const favorites = await FavoriteModel.find({ userId: userId }).exec();
+              //const favorites = [{motorId: "djso", userId: "nddnsk"}]
+              console.log(favorites)
+             
+              return favorites;
+
+          } catch (error) {
+            console.error('Erro ao buscar favoritos', error);
+           throw new Error("Favoritos não encontrados");
+           }
+         }
+
+    /*async findFavorites(userId: string): Promise<Favorite[]> {
           console.log("Services: buscarfav", userId)
     
           //const favorites = await FavoriteModel.find({ userId }).exec();
@@ -40,6 +42,6 @@ export class FavoriteService {
           if (!favorites) throw new Error("fav não encontrado");
           console.log(favorites)
           return favorites;
-        }
+        }*/
 
 }

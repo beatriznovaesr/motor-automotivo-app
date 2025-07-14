@@ -2,9 +2,11 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useUser } from '../../contexts/userContext';
 
 export const NavigationMenu = () => {
     const router = useRouter();
+    const { user, setUser } = useUser();
 
     return (
         <View style={style.container}>

@@ -14,7 +14,7 @@ export const NotificationBell = () => {
       try {
         if (!user?.email) return;
 
-        const userRes = await fetch(`http://localhost:5000/users/email/${user.email}`);
+        const userRes = await fetch(`http://localhost:5000/users/usuarios/${user.email}`);
         const userData = await userRes.json();
 
         if (!userData?._id) return;

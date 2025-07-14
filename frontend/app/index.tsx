@@ -53,7 +53,11 @@ export default function Login(){
 
       const json = await resposta.json();
       if (resposta.ok) {
-        setUser({ email })
+        setUser({ 
+          _id: json._id,
+          email: json.email,
+          nome: json.nome
+         })
         router.push('telaInicial')
         Alert.alert("Sucesso", json.mensagem || "Login realizado com sucesso");
       } else {

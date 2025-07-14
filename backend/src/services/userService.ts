@@ -28,7 +28,12 @@ export class UserService {
         throw error;
       }
   
-      return { mensagem: 'Login realizado com sucesso', user };
+      return { 
+        _id: user._id,
+        email: user.email,
+        nome: user.nome,
+        mensagem: 'Login realizado com sucesso'
+      };
     } catch (error: any) {
       console.error('Erro ao realizar login:', error);
 

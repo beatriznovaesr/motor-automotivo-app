@@ -26,22 +26,4 @@ export class MotorService {
             throw new Error('Não foi possível buscar motores');
         } 
     }
-
-    /*async buscarComentarios(motorId: string): Promise<Motor> {
-        console.log("Services: buscarComentarios", motorId)
-        const motor = await MotorModel.findById(motorId);
-        if (!motor) throw new Error("Motor não encontrado");
-        console.log(motor)
-        return motor;
-    }*/
-
-    /*async adicionarComentario(motorId: string, comentario: Comentario): Promise<Comentario[]> {
-        const motor = await MotorModel.findById(motorId);
-        if (!motor) throw new Error("Motor não encontrado");
-        motor.comentarios = motor.comentarios || [];
-        motor.comentarios.push(comentario);
-        await motor.save();
-        return motor.comentarios;
-    }*/
-
 }

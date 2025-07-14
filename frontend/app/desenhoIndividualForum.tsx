@@ -73,10 +73,7 @@ export default function MotorDetalhado() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          /*usuario_id: idUsuario,
-          usuario: nomeUsuario, 
-          texto: novoComentario,
-          resposta: false*/
+          userName: user.nome,
           userId: idUsuario,
           motorId: motor._id,
           text: novoTexto

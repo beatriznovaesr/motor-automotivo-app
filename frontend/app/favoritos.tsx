@@ -61,10 +61,12 @@ export default function Favoritos() {
 
     useEffect(() => {
       const carregarFavoritos = async () => {
-        console.log(idUsuario)
+        console.log("frontend",user?._id);
+        if (!user?._id) return;
+
         try {
-          console.log("log dentro do try",idUsuario)
-          const response = await fetch(`http://localhost:5000/api/favorites/${idUsuario}`);
+          console.log("log dentro do try", user._id)
+          const response = await fetch(`http://localhost:5000/api/favorites/${user._id}`);
           const data = await response.json();
           setFavoritos(data);
           console.log(data);
@@ -73,7 +75,7 @@ export default function Favoritos() {
         }
       };
       carregarFavoritos();
-    }, []); 
+    }, [user]); 
 
     
 
