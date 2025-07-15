@@ -21,12 +21,13 @@ export class CommentsService {
     }
   }
 
-  async replyToComment(parentId: string, userId: number, text: string): Promise<Comment | null> {
+  async replyToComment(parentId: string, userName: string, userId: number, text: string): Promise<Comment | null> {
     try {
       const parent = await CommentModel.findById(parentId);
       if (!parent) return null;
 
       const reply = new CommentModel({
+        userName,
         userId,
         motorId: parent.motorId,
         text,
@@ -70,7 +71,7 @@ export class CommentsService {
   }
 
     async buscarComentarios(motorId: string, userId: string): Promise<any[]> {
-      console.log("Services: buscarComentarios", motorId)
+      //console.log("Services: buscarComentarios", motorId)
 
       const comentarios = await CommentModel.find({ motorId }).exec();
 
@@ -83,7 +84,7 @@ export class CommentsService {
           podeEditar: obj.userId.toString() === userId
         };
       });
-      console.log(comentariosComPermissao)
+      //console.log(comentariosComPermissao)
       return comentariosComPermissao;
     }
 

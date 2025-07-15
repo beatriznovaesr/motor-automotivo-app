@@ -77,7 +77,7 @@ export default function MotorDetalhado() {
           userName: user.nome,
           userId: idUsuario,
           motorId: motor._id,
-          text: novoTexto
+          text: novoTexto,
         })
       });
         const resposta = await fetch(`http://192.168.0.117:5000/api/comments/${motor._id}?userId=${user._id}`);
@@ -146,6 +146,28 @@ export default function MotorDetalhado() {
       }
     };
 
+    const responderComentario = async (novoTexto: string, parent: string) => {
+      console.log("respondendo: ", parent)
+      try {
+        await fetch(`http://192.168.0.117:5000/api/comments/reply/${parent}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: idUsuario,
+          userName: user.nome,
+          text: novoTexto,
+        })
+      });
+        const resposta = await fetch(`http://192.168.0.117:5000/api/comments/${motor._id}?userId=${user._id}`);
+
+        const atualizados = await resposta.json();
+        setComentarios(atualizados);
+
+      } catch (err) {
+          console.error("Erro ao responder comentário:", err);
+      }
+    };
+
   return (
     <View style={{
       flex: 1,
@@ -187,48 +209,64 @@ export default function MotorDetalhado() {
         <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
           <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Comentários:</Text>
 
-          {comentarios.map(com => (
-            <View key={com.id} style={{ borderBottomWidth: 1, borderColor: '#ccc', paddingVertical: 8 }}>
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{com.userName}</Text>
-              <Text style={{ color: '#fff' }}>{com.text}</Text>
+          {(() => {
+  const mapaComentarios = new Map(comentarios.map(c => [c._id, c.userName]));
 
-              {com.podeEditar && (
-                <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
-                  <TouchableOpacity onPress={() => {
-                    Alert.alert("Excluir comentário", "Deseja excluir este comentário?",
-                      [
-                        { text: "Cancelar", style: "cancel" },
-                        { text: "Excluir", onPress: () => deletarComentario(com._id), style: "destructive" }
-                      ]
-                    );
-                  }}>
-                    <Ionicons name="trash-outline" size={20} color="#ccc" />
-                  </TouchableOpacity>
+  return comentarios.map(com => {
+    const nomePai = com.replyTo ? mapaComentarios.get(com.replyTo) : null;
 
-                  <TouchableOpacity
-                    onPress={() => {
-                      setComentarioEditando(com);
-                      setComentarioNovoTexto(com.text);
-                    }}
-                  >
-                    <Ionicons name="pencil-outline" size={20} color="#ccc" />
-                  </TouchableOpacity>
-                </View>
-              )}
+    return (
+      <View key={com._id} style={{ borderBottomWidth: 1, borderColor: '#ccc', paddingVertical: 8 }}>
+        <Text style={{ color: '#fff', fontWeight: 'bold' }}>{com.userName}</Text>
 
-              {com.resposta && (
-                <TouchableOpacity
-                onPress={() => {
-                  setComentarioRespondendo(com);
-                  setRespostaTexto('');
-                }}
->
-  <Ionicons name="arrow-undo-outline" size={20} color="#fff" />
-</TouchableOpacity>
+        {nomePai ? (
+          <Text style={{ color: '#fff' }}>
+            <Text style={{ color: '#ccc' }}>Em resposta a </Text>
+            <Text style={{ color: '#ccc', fontWeight: 'bold' }}>{nomePai}</Text>: {com.text}
+          </Text>
+        ) : (
+          <Text style={{ color: '#fff' }}>{com.text}</Text>
+        )}
 
-              )}
-            </View>
-          ))}
+        {com.podeEditar && (
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
+            <TouchableOpacity onPress={() => {
+              Alert.alert("Excluir comentário", "Deseja excluir este comentário?",
+                [
+                  { text: "Cancelar", style: "cancel" },
+                  { text: "Excluir", onPress: () => deletarComentario(com._id), style: "destructive" }
+                ]
+              );
+            }}>
+              <Ionicons name="trash-outline" size={20} color="#ccc" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setComentarioEditando(com);
+                setComentarioNovoTexto(com.text);
+              }}
+            >
+              <Ionicons name="pencil-outline" size={20} color="#ccc" />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {com.userId !== idUsuario && (
+          <TouchableOpacity
+            onPress={() => {
+              setComentarioRespondendo(com);
+              setRespostaTexto('');
+            }}
+          >
+            <Ionicons name="arrow-undo-outline" size={20} color="#fff" />
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  });
+})()}
+
         </View>
 
         <View style={{
@@ -431,7 +469,7 @@ export default function MotorDetalhado() {
       borderRadius: 12
     }}>
       <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#155fbf', marginBottom: 10 }}>
-        Responder {comentarioRespondendo?.usuario}:
+        Responder {comentarioRespondendo?.userName}:
       </Text>
 
       <TextInput
@@ -463,16 +501,10 @@ export default function MotorDetalhado() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => {
-            const novaResposta = {
-              id: comentarios.length + 1,
-              usuario: 'usuárioAtual', // você pode trocar pelo nome logado
-              texto: `@${comentarioRespondendo.usuario} ${respostaTexto}`,
-              resposta: true
-            };
-            setComentarios([...comentarios, novaResposta]);
-            setComentarioRespondendo(null);
-            setRespostaTexto('');
+          onPress={async () => {
+          await responderComentario(respostaTexto, comentarioRespondendo._id);
+          setComentarioRespondendo(null);
+          setRespostaTexto('');
           }}
           style={{
             backgroundColor: '#64a9ff',

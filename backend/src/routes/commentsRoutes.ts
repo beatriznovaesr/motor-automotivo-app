@@ -9,7 +9,7 @@ router.get("/notifications/:userId",commentsController.criarNotificacoes);
 router.post('/add', commentsController.addComment);
 
 
-router.post('/comments/:id/reply', async (req, res) => {
+router.post('/reply/:id', async (req, res) => {
   await commentsController.replyToComment(req, res);
 });
 

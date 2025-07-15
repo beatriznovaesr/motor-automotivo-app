@@ -7,7 +7,7 @@ export class CommentsController {
 
   async buscarComentarios(req: Request, res: Response) {
     try {
-      console.log("CONTROLLER: buscarComentarios", req.params.motorId)
+      //console.log("CONTROLLER: buscarComentarios", req.params.motorId)
 
         const userId = req.query.userId as string;
         const motorId = req.params.motorId;
@@ -60,10 +60,11 @@ export class CommentsController {
 
  async replyToComment(req: Request, res: Response) {
   try {
+    console.log("log de respota de comentario")
     const parentId = req.params.id;
-    const { userId, text } = req.body;
+    const { userName, userId, text } = req.body;
 
-    const reply = await commentsVM.replyToComment(parentId, userId, text);
+    const reply = await commentsVM.replyToComment(parentId, userName, userId, text);
     if (!reply) {
       return res.status(404).json({ error: "Comentário original não encontrado" });
     }
