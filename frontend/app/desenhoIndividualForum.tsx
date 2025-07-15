@@ -149,7 +149,7 @@ export default function MotorDetalhado() {
     const responderComentario = async (novoTexto: string, parent: string) => {
       console.log("respondendo: ", parent)
       try {
-        await fetch(`http://192.168.0.117:5000/api/comments/reply/${parent}`, {
+        await fetch(`http://localhost:5000/api/comments/reply/${parent}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -158,7 +158,7 @@ export default function MotorDetalhado() {
           text: novoTexto,
         })
       });
-        const resposta = await fetch(`http://192.168.0.117:5000/api/comments/${motor._id}?userId=${user._id}`);
+        const resposta = await fetch(`http://localhost:5000/api/comments/${motor._id}?userId=${user._id}`);
 
         const atualizados = await resposta.json();
         setComentarios(atualizados);

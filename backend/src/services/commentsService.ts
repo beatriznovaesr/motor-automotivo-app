@@ -89,16 +89,19 @@ export class CommentsService {
     }
 
     async buscarRespostasParaUsuario(userId: string) {
-      const replies = await CommentModel.find({
-        parentComment: { $exists: true }, 
-      })
-        .populate("user") 
-        .populate("motor")
-        .populate({
-          path: "parentComment",
-          match: { user: userId }, 
-        });
-
-      return replies.filter((r) => r.replyTo !== null);
+      const comentariosDoUsuario = await CommentModel.find({ userId });
+      const idsDosComentariosDoUsuario = comentariosDoUsuario.map(c => c._id.toString());
+      const  respostas  = await CommentModel.find({
+      replyTo: { $in: idsDosComentariosDoUsuario },
+    })
+    .populate("userId") // para mostrar nome de quem respondeu, se quiser
+    .populate("motorId"); // opcional
+    console.log("log aqui mesmo", respostas);
+   return respostas.filter((r) => r.replyTo !== null);
     }
+
+    async getCommentById(commentId: string) {
+      return CommentModel.findById(commentId);
+}
+
 }

@@ -35,7 +35,7 @@ export const NotificationBell = () => {
     <TouchableOpacity
       onPress={() => router.push("notificacao")} 
       //style={{ top: 50, right: 16, zIndex: 10 }}
-    >
+          >
       <MaterialCommunityIcons
         name="bell-ring"
         size={32}
