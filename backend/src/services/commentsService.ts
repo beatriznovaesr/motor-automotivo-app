@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import CommentModel, { Comment } from "../models/Comments";
+import Notification from "../models/Notification";
 
 export class CommentsService {
   async addComment(userName: string, userId: string, motorId: string, text: string): Promise<Comment> {
@@ -89,17 +90,13 @@ export class CommentsService {
     }
 
     async buscarRespostasParaUsuario(userId: string) {
-      const comentariosDoUsuario = await CommentModel.find({ userId });
-      const idsDosComentariosDoUsuario = comentariosDoUsuario.map(c => c._id.toString());
-      const  respostas  = await CommentModel.find({
-      replyTo: { $in: idsDosComentariosDoUsuario },
-    })
-    .populate("userId") // para mostrar nome de quem respondeu, se quiser
-    .populate("motorId"); // opcional
-    console.log("log aqui mesmo", respostas);
-   return respostas.filter((r) => r.replyTo !== null);
-    }
+      console.log(userId)
+      const comentarios = await Notification.find({ userId });
+      const mensagens = comentarios.map((comentario) => comentario.message);
+      console.log("coment service",mensagens);
 
+      return mensagens;
+      }
     async getCommentById(commentId: string) {
       return CommentModel.findById(commentId);
 }

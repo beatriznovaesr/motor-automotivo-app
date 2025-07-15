@@ -24,15 +24,16 @@ export class CommentsController {
     console.log("coisaaaa")
     try {
       const userId = req.params.userId;
+      console.log("user no controller", userId);
       console.log("criar not no controller", userId);
-      const replies = await commentsVM.buscarRespostasParaUsuario(userId);
-      console.log(replies);
-      const notificacoes = replies.map((reply) => ({
-        _id: reply._id,
-        message: `Usuário ${reply.userId as any} respondeu seu comentário em ${reply.motorId as any}`,
-        createdAt: reply.createdAt,
-        read: false,
-      }));
+      const res = await commentsVM.buscarRespostasParaUsuario(userId);
+      // console.log(replies);
+       const notificacoes = res.map((r) => ({
+      //   _id: reply._id,
+        message: `Usuário ${res.userId as any} respondeu seu comentário em ${reply.motorId as any}`,
+      //   createdAt: reply.createdAt,
+      //   read: false,
+       }));
       console.log(notificacoes);
       res.status(200).json(notificacoes);
 
