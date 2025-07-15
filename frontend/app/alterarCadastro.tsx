@@ -28,7 +28,7 @@ export default function AlterarCadastro() {
     useEffect(() => {
         async function carregarUsuario() {
             try {
-                const resposta = await fetch(`http://localhost/api/users/usuarios/${userEmail}`);
+                const resposta = await fetch(`http://192.168.0.117/api/users/usuarios/${userEmail}`);
 
                 if (!resposta.ok) {
                     throw new Error("Falha ao buscar dados do usuário");
@@ -52,7 +52,7 @@ export default function AlterarCadastro() {
 
     const handleAlterarCadastro = async () => {
         try {
-            const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${id}`, {
+            const resposta = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

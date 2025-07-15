@@ -39,7 +39,7 @@ export default function Notificacao() {
       try {
         if (!user?.email) return;
 
-        const userRes = await fetch(`http://localhost:5000/api/users/usuarios/${user.email}`);
+        const userRes = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${user.email}`);
         const userData = await userRes.json();
 
         if (!userData?._id) {
@@ -47,7 +47,7 @@ export default function Notificacao() {
           return;
         }
 
-        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notifications/${userData._id}`);
+        const notificationsRes = await fetch(`http://192.168.0.117:5000/api/comments/notifications/${userData._id}`);
         const notificationsData = await notificationsRes.json();
 
         setNotifications(notificationsData);

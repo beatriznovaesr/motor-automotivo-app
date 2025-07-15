@@ -34,7 +34,7 @@ export default function TelaInicial() {
     setNenhumResultado(false);
 
     try {
-      const resposta = await fetch("http://localhost:5000/api/motors/procurar-motor", {
+      const resposta = await fetch("http://192.168.0.117:5000/api/motors/procurar-motor", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
