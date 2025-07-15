@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import CommentModel, { Comment } from "../models/Comments";
+import Notification from "../models/Notification";
 
 export class CommentsService {
   async addComment(userName: string, userId: string, motorId: string, text: string): Promise<Comment> {
@@ -89,16 +90,15 @@ export class CommentsService {
     }
 
     async buscarRespostasParaUsuario(userId: string) {
-      const replies = await CommentModel.find({
-        parentComment: { $exists: true }, 
-      })
-        .populate("user") 
-        .populate("motor")
-        .populate({
-          path: "parentComment",
-          match: { user: userId }, 
-        });
+      console.log(userId)
+      const comentarios = await Notification.find({ userId });
+      const mensagens = comentarios.map((comentario) => comentario.message);
+      console.log("coment service",mensagens);
 
-      return replies.filter((r) => r.replyTo !== null);
-    }
+      return mensagens;
+      }
+    async getCommentById(commentId: string) {
+      return CommentModel.findById(commentId);
+}
+
 }

@@ -1,16 +1,24 @@
 import NotificationModel from "../models/Notification";
 
+
+
 export const getNotificationsByUser = async (userId: string) => {
-  return await NotificationModel.find({ userId }).sort({ createdAt: -1 });
+  console.log("user id no service", userId);
+  return await NotificationModel.find({ userId }).exec();
 };
 
 export const createNotification = async (userId: string, message: string) => {
-  return await NotificationModel.create({
+
+
+  const novaNotificacao = await NotificationModel.create({
     userId,
     message,
     read: false,
   });
+
+  return novaNotificacao;
 };
+
 
 export const markNotificationAsRead = async (notificationId: string) => {
   const notification = await NotificationModel.findById(notificationId);

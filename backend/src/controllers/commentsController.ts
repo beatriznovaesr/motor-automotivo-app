@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { CommentsService } from "../services/commentsService";
+import * as NotificationService from "../services/notificationService";
+import MotorModel, { Motor } from '../models/Motor';
 
 const commentsVM = new CommentsService();
 
@@ -20,18 +22,16 @@ export class CommentsController {
     }
 
   async criarNotificacoes(req: Request, res: Response) {
+    console.log("coisaaaa")
     try {
       const userId = req.params.userId;
-      const replies = await commentsVM.buscarRespostasParaUsuario(userId);
+      console.log("user no controller", userId);
+      console.log("criar not no controller", userId);
+      const resposta = await NotificationService.getNotificationsByUser(userId);
+      const mensagens = resposta.map(n => n.message);
 
-      const notificacoes = replies.map((reply) => ({
-        _id: reply._id,
-        message: `Usuário ${reply.userId as any} respondeu seu comentário em ${reply.motorId as any}`,
-        createdAt: reply.createdAt,
-        read: false,
-      }));
-
-      res.status(200).json(notificacoes);
+      console.log(mensagens);
+      res.status(200).json(mensagens);
 
     } catch (error: any) {
       console.error("Erro ao buscar notificações:", error);
@@ -59,8 +59,7 @@ export class CommentsController {
   }
 
  async replyToComment(req: Request, res: Response) {
-  try {
-    console.log("log de respota de comentario")
+   try {
     const parentId = req.params.id;
     const { userName, userId, text } = req.body;
 
@@ -69,6 +68,20 @@ export class CommentsController {
       return res.status(404).json({ error: "Comentário original não encontrado" });
     }
 
+    const originalComment = await commentsVM.getCommentById(parentId);
+    
+    if (
+      originalComment &&
+      originalComment.userId.toString() !== userId 
+    ) {
+
+      const motor = await MotorModel.findById(originalComment.motorId);
+      const modelo = motor?.modelo || 'motor desconhecido';
+      console.log("modelo", modelo, "id", originalComment.motorId)
+      const notificationMessage = `Usuário ${userName} respondeu seu comentário sobre o motor ${modelo}`;
+      console.log("Mensagem da notificação:", notificationMessage);
+      await NotificationService.createNotification(originalComment.userId.toString(), notificationMessage);
+    }
     return res.status(201).json(reply);
 
   } catch (error: any) {

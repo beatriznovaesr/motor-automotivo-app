@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
 } from "react-native";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
@@ -18,12 +17,10 @@ import {
 
 import { useUser } from "../src/contexts/userContext";
 
-interface Notification {
-  _id: string;
-  message: string;
-  read?: boolean;
-  createdAt?: string;
-}
+// ✅ Agora notificações são apenas strings
+type Notification = string;
+
+const API_URL = process.env.EXPO_PUBLIC_API || "http://localhost:5000";
 
 export default function Notificacao() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -37,20 +34,29 @@ export default function Notificacao() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        if (!user?.email) return;
-
-        const userRes = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${user.email}`);
-        const userData = await userRes.json();
-
-        if (!userData?._id) {
-          console.warn("Usuário não encontrado");
+        if (!user?.email) {
+          console.warn("Nenhum e-mail de usuário encontrado");
           return;
         }
 
-        const notificationsRes = await fetch(`http://192.168.0.117:5000/api/comments/notifications/${userData._id}`);
+        console.log("Buscando usuário pelo e-mail:", user.email);
+
+        const userRes = await fetch(`${API_URL}/api/users/usuarios/${user.email}`);
+        const userData = await userRes.json();
+
+        console.log("Usuário encontrado:", userData);
+
+        const notificationsRes = await fetch(`${API_URL}/api/comments/notifications/${userData.id}`);
         const notificationsData = await notificationsRes.json();
 
-        setNotifications(notificationsData);
+        console.log("Notificações recebidas:", notificationsData);
+
+        if (Array.isArray(notificationsData)) {
+          setNotifications(notificationsData); // array de strings
+        } else {
+          console.warn("Formato inesperado das notificações");
+        }
+
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
       }
@@ -77,10 +83,10 @@ export default function Notificacao() {
               <FlatList
                 scrollEnabled={false}
                 data={notifications}
-                keyExtractor={(item) => item._id.toString()}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <View style={styles.notificationItem}>
-                    <Text style={styles.notificationText}>{item.message}</Text>
+                    <Text style={styles.notificationText}>{item}</Text>
                   </View>
                 )}
               />
@@ -93,6 +99,7 @@ export default function Notificacao() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   wrapper: {

@@ -56,7 +56,7 @@ export default function Cadastro(){
     }
 
     try {
-      const resposta = await fetch("http://192.168.0.117:5000/api/users/cadastro", {
+      const resposta = await fetch("http://172.20.10.3:5000/api/users/cadastro", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
