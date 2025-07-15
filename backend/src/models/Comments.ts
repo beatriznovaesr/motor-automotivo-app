@@ -10,7 +10,7 @@ export interface Comment {
 }
 
 const CommentSchema = new mongoose.Schema<Comment>({
-  userName: { type: String, required: true }, // mantido para facilitar exibição
+  userName: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   motorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Motor', required: true },
   text: { type: String, required: true },

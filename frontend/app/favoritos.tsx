@@ -18,7 +18,7 @@ export default function Favoritos() {
   useEffect(() => {
             async function buscaUsuario() {
                 try {
-                    const resposta = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${userEmail}`);
+                    const resposta = await fetch(`http://localhost:5000/api/users/usuarios/${userEmail}`);
     
                     if (!resposta.ok) {
                         throw new Error("Falha ao buscar dados do usuário");
@@ -39,7 +39,7 @@ export default function Favoritos() {
 
         try {
           console.log("log dentro do try", user._id)
-          const response = await fetch(`http://192.168.0.117:5000/api/favorites/${user._id}`);
+          const response = await fetch(`http://localhost:5000/api/favorites/${user._id}`);
           const data = await response.json();
           setFavoritos(data);
           console.log(data);
