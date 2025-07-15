@@ -8,8 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { NavigationMenu } from "../src/components/navigationMenu/navigationMenu";
-import replyComment from "../src/components/replyComment/replyComment";
-import { NotificationBell } from "../src/components/notificationComponent/notificationBell"; 
+import { NotificationBell } from "../src/components/notificationComponent/notificationBell";
 
 import {
   useFonts,
@@ -26,13 +25,9 @@ interface Notification {
   createdAt?: string;
 }
 
-const ReplyComment = replyComment;
-
 export default function Notificacao() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { user } = useUser();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
   const [fontsLoaded] = useFonts({
     RobotoSerif_400Regular,
@@ -44,7 +39,7 @@ export default function Notificacao() {
       try {
         if (!user?.email) return;
 
-        const userRes = await fetch(`http://192.168.0.117:5000/api/users/usuarios/${user.email}`);
+        const userRes = await fetch(`http://localhost:5000/api/users/usuarios/${user.email}`);
         const userData = await userRes.json();
 
         if (!userData?._id) {
@@ -52,7 +47,7 @@ export default function Notificacao() {
           return;
         }
 
-        const notificationsRes = await fetch(`http://192.168.0.117:5000/api/comments/notifications/${userData._id}`);
+        const notificationsRes = await fetch(`http://localhost:5000/api/comments/notifications/${userData._id}`);
         const notificationsData = await notificationsRes.json();
 
         setNotifications(notificationsData);
@@ -72,7 +67,7 @@ export default function Notificacao() {
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Notificações</Text>
-            <NotificationBell /> 
+            <NotificationBell />
           </View>
 
           <View style={styles.notificationList}>
@@ -84,45 +79,20 @@ export default function Notificacao() {
                 data={notifications}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedNotification(item);
-                      setModalVisible(true);
-                    }}
-                    style={styles.notificationItem}
-                  >
+                  <View style={styles.notificationItem}>
                     <Text style={styles.notificationText}>{item.message}</Text>
-                  </TouchableOpacity>
+                  </View>
                 )}
               />
             )}
           </View>
-
-          <ReplyComment
-            visible={modalVisible}
-            message={selectedNotification?.message || ""}
-            onCancel={() => setModalVisible(false)}
-            onSave={async (replyText) => {
-              try {
-                const res = await fetch(`http://192.168.0.117:5000/api/comments/reply/${selectedNotification?._id}`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ userId: user?._id, text: replyText })
-                });
-                if (!res.ok) throw new Error("Erro ao salvar resposta");
-                setModalVisible(false);
-              } catch (e) {
-                console.error(e);
-              }
-            }}
-          />
         </View>
       </ScrollView>
 
       <NavigationMenu />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -151,20 +121,19 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
     backgroundColor: "#155fbf",
     width: "100%",
-    },
+  },
   headerText: {
     color: "#ffffff",
     fontSize: 22,
     fontFamily: "RobotoSerif_700Bold",
     textAlign: "center",
     flex: 1,
-    marginLeft: -70, 
+    marginLeft: -70,
     marginTop: 26,
     textShadowColor: "#000000aa",
     textShadowOffset: { width: 1, height: 2 },
     textShadowRadius: 4,
-    },
-
+  },
   notificationList: {
     width: "100%",
     backgroundColor: "#ffffff",
